@@ -29,6 +29,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         >
           Liste d&apos;attente
         </Link>
+        <Link
+          href="/pro/tableau-de-bord/cartes-cadeaux"
+          className="block rounded-lg px-3 py-2 hover:bg-black/5"
+        >
+          Cartes cadeaux
+        </Link>
         {(account.role === "admin" || account.role === "owner") && (
           <Link href="/pro/admin" className="block rounded-lg px-3 py-2 hover:bg-black/5">
             Espace admin

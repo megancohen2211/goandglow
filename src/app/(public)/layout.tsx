@@ -18,7 +18,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <footer className="border-t border-black/5 py-8 text-center text-xs text-ink/40">
         <p>© {new Date().getFullYear()} Go & Glow</p>
-        <p className="mt-1">
+        <p className="mt-1 space-x-3">
+          <Link href="/cartes-cadeaux" className="hover:underline">
+            Cartes cadeaux
+          </Link>
           <Link href="/pro" className="hover:underline">
             Espace pro
           </Link>

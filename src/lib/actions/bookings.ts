@@ -50,6 +50,7 @@ export async function createBooking(formData: FormData) {
   const requestedStaffId = String(formData.get("staffId") ?? "") || null;
   const date = String(formData.get("date") ?? "");
   const time = String(formData.get("time") ?? "");
+  const giftcardCode = String(formData.get("giftcardCode") ?? "").trim().toUpperCase() || null;
   const peopleCount = Math.min(Math.max(Number(formData.get("peopleCount") ?? 1), 1), 4);
 
   if (!salonId || !serviceId || !date || !time) {
@@ -141,6 +142,20 @@ export async function createBooking(formData: FormData) {
     }
   }
 
+  let giftcard: { id: string; balance: number } | null = null;
+  if (giftcardCode) {
+    const { data: foundGiftcard } = await admin
+      .from("giftcards")
+      .select("id, balance")
+      .eq("salon_id", salonId)
+      .eq("code", giftcardCode)
+      .maybeSingle();
+    if (!foundGiftcard || foundGiftcard.balance <= 0) {
+      withError(base, "Ce code cadeau est invalide ou déjà utilisé.");
+    }
+    giftcard = foundGiftcard;
+  }
+
   const rows = names.map((name, i) => ({
     salon_id: salonId,
     service_id: serviceId,
@@ -155,12 +170,30 @@ export async function createBooking(formData: FormData) {
     source: "goandglow",
   }));
 
+  if (giftcard) {
+    const discount = Math.min(giftcard.balance, rows[0].price);
+    rows[0].price = Number((rows[0].price - discount).toFixed(2));
+  }
+
   const { data: created, error: insertError } = await admin
     .from("bookings")
     .insert(rows)
     .select("id");
 
   if (insertError || !created) withError(base, "Impossible d'enregistrer la réservation, réessayez.");
+
+  if (giftcard) {
+    const discount = Math.min(giftcard.balance, service!.price);
+    await admin
+      .from("giftcards")
+      .update({ balance: Number((giftcard.balance - discount).toFixed(2)) })
+      .eq("id", giftcard.id);
+    await admin.from("giftcard_redemptions").insert({
+      giftcard_id: giftcard.id,
+      booking_id: created![0].id,
+      amount: discount,
+    });
+  }
 
   redirect(`${base}/reserver/confirmation?id=${created![0].id}`);
 }
