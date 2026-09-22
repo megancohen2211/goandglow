@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Salon } from "@/lib/types";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export function SalonCard({ salon }: { salon: Salon }) {
   const href = `/${salon.city_slug}/${salon.category_slug}/${salon.slug}`;
@@ -8,7 +9,7 @@ export function SalonCard({ salon }: { salon: Salon }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
       <div
-        className="flex h-24 items-center justify-center text-4xl font-extrabold"
+        className="relative flex h-24 items-center justify-center text-4xl font-extrabold"
         style={{
           backgroundColor: `hsl(${hue} 40% 88%)`,
           color: `hsl(${hue} 45% 32%)`,
@@ -16,6 +17,9 @@ export function SalonCard({ salon }: { salon: Salon }) {
         }}
       >
         {salon.name.charAt(0).toUpperCase()}
+        <div className="absolute right-2 top-2">
+          <FavoriteButton salonId={salon.id} />
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">

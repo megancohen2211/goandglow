@@ -12,6 +12,7 @@ import { submitReview } from "@/lib/actions/reviews";
 import { startOrContinueChat } from "@/lib/actions/chats";
 import { checkLoyaltyPoints } from "@/lib/actions/loyalty";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 interface SalonPageProps {
   params: { citySlug: string; categorySlug: string; salonSlug: string };
@@ -64,14 +65,17 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
             </p>
           )}
         </div>
-        {salon.phone && (
-          <a
-            href={`tel:${salon.phone}`}
-            className="shrink-0 rounded-full bg-brand-light px-4 py-2 text-sm font-medium text-brand-dark"
-          >
-            Appeler le salon
-          </a>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          <FavoriteButton salonId={salon.id} />
+          {salon.phone && (
+            <a
+              href={`tel:${salon.phone}`}
+              className="rounded-full bg-brand-light px-4 py-2 text-sm font-medium text-brand-dark"
+            >
+              Appeler le salon
+            </a>
+          )}
+        </div>
       </div>
 
       {salon.description && <p className="mt-4 text-ink/80">{salon.description}</p>}

@@ -240,6 +240,19 @@ export function averageRating(reviews: Review[]) {
   return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 }
 
+export async function getSalonsByIds(ids: string[]) {
+  if (ids.length === 0) return [];
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("salons")
+    .select("*")
+    .eq("status", "approved")
+    .in("id", ids);
+
+  if (error) throw error;
+  return (data ?? []) as Salon[];
+}
+
 export async function listCitiesWithApprovedSalons() {
   const supabase = createClient();
   const { data, error } = await supabase

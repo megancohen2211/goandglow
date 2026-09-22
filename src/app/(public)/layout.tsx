@@ -10,6 +10,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           </Link>
           <nav className="flex gap-4 text-sm text-ink/70">
             <Link href="/">Rechercher</Link>
+            <Link href="/favoris">Mes favoris</Link>
           </nav>
         </div>
       </header>
