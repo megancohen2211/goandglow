@@ -23,6 +23,12 @@ export default async function ConfirmationPage({
 
   if (!booking) notFound();
 
+  const { data: salon } = await admin
+    .from("salons")
+    .select("loyalty_points_per_booking")
+    .eq("id", booking.salon_id)
+    .maybeSingle();
+
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center">
       <h1 className="text-2xl font-semibold text-brand-dark">Réservation confirmée</h1>
@@ -33,6 +39,11 @@ export default async function ConfirmationPage({
       <p className="mt-1 text-sm text-ink/50">
         Un SMS/e-mail de confirmation sera bientôt envoyé automatiquement.
       </p>
+      {salon && salon.loyalty_points_per_booking > 0 && (
+        <p className="mt-3 text-sm text-brand-dark">
+          Vous avez gagné {salon.loyalty_points_per_booking} point(s) de fidélité.
+        </p>
+      )}
 
       <Link
         href={`/${params.citySlug}/${params.categorySlug}/${params.salonSlug}`}

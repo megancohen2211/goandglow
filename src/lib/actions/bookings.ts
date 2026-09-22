@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { addMinutes, timeToMinutes, weekdayOf } from "@/lib/time";
+import { awardLoyaltyPoints } from "@/lib/loyalty";
 import type { Booking, OpeningHours, Service, Staff } from "@/lib/types";
 
 function basePath(citySlug: string, categorySlug: string, salonSlug: string) {
@@ -193,6 +194,13 @@ export async function createBooking(formData: FormData) {
       booking_id: created![0].id,
       amount: discount,
     });
+  }
+
+  const pointsPerBooking = Number(salon.loyalty_points_per_booking ?? 0);
+  if (pointsPerBooking > 0) {
+    for (let i = 0; i < names.length; i++) {
+      await awardLoyaltyPoints(admin, salonId, phones[i], names[i], pointsPerBooking, created![i].id);
+    }
   }
 
   redirect(`${base}/reserver/confirmation?id=${created![0].id}`);

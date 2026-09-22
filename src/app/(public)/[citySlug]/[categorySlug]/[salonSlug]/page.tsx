@@ -10,10 +10,12 @@ import {
 } from "@/lib/data/salons";
 import { submitReview } from "@/lib/actions/reviews";
 import { startOrContinueChat } from "@/lib/actions/chats";
+import { checkLoyaltyPoints } from "@/lib/actions/loyalty";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 interface SalonPageProps {
   params: { citySlug: string; categorySlug: string; salonSlug: string };
-  searchParams: { erreur?: string; avis?: string };
+  searchParams: { erreur?: string; avis?: string; phone?: string };
 }
 
 export async function generateMetadata({ params }: SalonPageProps): Promise<Metadata> {
@@ -35,6 +37,18 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
     getSalonReviews(salon.id),
   ]);
   const avg = averageRating(reviews);
+
+  let loyaltyPoints: number | null = null;
+  if (searchParams.phone && salon.loyalty_points_per_booking > 0) {
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from("loyalty_points")
+      .select("points")
+      .eq("salon_id", salon.id)
+      .eq("client_phone", searchParams.phone)
+      .maybeSingle();
+    loyaltyPoints = data?.points ?? 0;
+  }
 
   const bookHref = `/${params.citySlug}/${params.categorySlug}/${params.salonSlug}/reserver`;
 
@@ -113,6 +127,37 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
       >
         Réserver un rendez-vous
       </Link>
+
+      {salon.loyalty_points_per_booking > 0 && (
+        <section id="fidelite" className="mt-12 scroll-mt-8">
+          <h2 className="text-lg font-medium">Programme de fidélité</h2>
+          <p className="mt-1 text-sm text-ink/60">
+            {salon.loyalty_points_per_booking} point(s) gagné(s) à chaque rendez-vous.
+          </p>
+
+          <form action={checkLoyaltyPoints} className="mt-4 flex gap-2">
+            <input type="hidden" name="citySlug" value={params.citySlug} />
+            <input type="hidden" name="categorySlug" value={params.categorySlug} />
+            <input type="hidden" name="salonSlug" value={params.salonSlug} />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Votre téléphone"
+              defaultValue={searchParams.phone ?? ""}
+              className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+            />
+            <button className="rounded-lg border border-black/10 px-4 py-2 text-sm font-medium hover:bg-black/5">
+              Voir mes points
+            </button>
+          </form>
+
+          {loyaltyPoints !== null && (
+            <p className="mt-3 rounded-lg bg-brand-light px-4 py-3 text-sm text-brand-dark">
+              Vous avez {loyaltyPoints} point(s) chez {salon.name}.
+            </p>
+          )}
+        </section>
+      )}
 
       <section id="contact" className="mt-12 scroll-mt-8">
         <h2 className="text-lg font-medium">Une question ?</h2>
