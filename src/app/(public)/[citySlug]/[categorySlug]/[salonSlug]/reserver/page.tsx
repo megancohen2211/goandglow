@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { getSalonBySlug, getSalonServices, getSalonStaff } from "@/lib/data/salons";
 import { createBooking } from "@/lib/actions/bookings";
+import { joinWaitlist } from "@/lib/actions/waitlist";
 
 interface ReserverPageProps {
   params: { citySlug: string; categorySlug: string; salonSlug: string };
-  searchParams: { erreur?: string };
+  searchParams: { erreur?: string; "liste-attente"?: string };
 }
 
 export default async function ReserverPage({ params, searchParams }: ReserverPageProps) {
@@ -128,6 +129,92 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
           Confirmer la réservation
         </button>
       </form>
+
+      <section className="mt-10 border-t border-black/5 pt-8">
+        <h2 className="text-lg font-medium">Aucun créneau ne convient ?</h2>
+        <p className="mt-1 text-sm text-ink/60">
+          Laissez vos coordonnées, le salon vous préviendra si une place se libère.
+        </p>
+
+        {searchParams["liste-attente"] === "envoyee" && (
+          <p className="mt-3 rounded-lg bg-brand-light px-4 py-3 text-sm text-brand-dark">
+            C&apos;est noté, le salon vous contactera si un créneau se libère.
+          </p>
+        )}
+
+        <details className="mt-4">
+          <summary className="cursor-pointer text-sm font-medium text-brand-dark">
+            Rejoindre la liste d&apos;attente
+          </summary>
+          <form action={joinWaitlist} className="mt-4 space-y-4 rounded-xl border border-black/10 bg-white p-4">
+            <input type="hidden" name="citySlug" value={params.citySlug} />
+            <input type="hidden" name="categorySlug" value={params.categorySlug} />
+            <input type="hidden" name="salonSlug" value={params.salonSlug} />
+            <input type="hidden" name="salonId" value={salon.id} />
+
+            <div>
+              <label className="block text-sm font-medium">Prestation souhaitée</label>
+              <select name="serviceId" className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+                <option value="">Peu importe</option>
+                {services.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">Date souhaitée</label>
+                <input
+                  type="date"
+                  name="wantedDate"
+                  min={today}
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Période</label>
+                <input
+                  type="text"
+                  name="period"
+                  placeholder="ex. samedi matin"
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">Nom</label>
+                <input
+                  type="text"
+                  name="clientName"
+                  required
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Téléphone</label>
+                <input
+                  type="tel"
+                  name="clientPhone"
+                  required
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-lg border border-black/10 px-5 py-2.5 text-sm font-medium hover:bg-black/5"
+            >
+              Rejoindre la liste d&apos;attente
+            </button>
+          </form>
+        </details>
+      </section>
     </div>
   );
 }

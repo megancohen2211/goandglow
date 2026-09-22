@@ -23,6 +23,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         >
           Avis
         </Link>
+        <Link
+          href="/pro/tableau-de-bord/liste-attente"
+          className="block rounded-lg px-3 py-2 hover:bg-black/5"
+        >
+          Liste d&apos;attente
+        </Link>
         {(account.role === "admin" || account.role === "owner") && (
           <Link href="/pro/admin" className="block rounded-lg px-3 py-2 hover:bg-black/5">
             Espace admin
