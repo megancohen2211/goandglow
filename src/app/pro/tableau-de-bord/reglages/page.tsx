@@ -1,0 +1,105 @@
+import { redirect } from "next/navigation";
+import { requireAccount } from "@/lib/auth";
+import { getMySalons } from "@/lib/data/pro";
+import { updateSalonSettings } from "@/lib/actions/settings";
+import { SalonSwitcher } from "@/components/SalonSwitcher";
+
+interface ReglagesPageProps {
+  searchParams: { salon?: string };
+}
+
+export default async function ReglagesPage({ searchParams }: ReglagesPageProps) {
+  const account = await requireAccount();
+  const salons = await getMySalons(account.id);
+  const approved = salons.filter((s) => s.status === "approved");
+
+  if (approved.length === 0) {
+    return (
+      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+        Aucune fiche publiée pour l&apos;instant.
+      </p>
+    );
+  }
+
+  const salonId = searchParams.salon ?? approved[0].id;
+  const salon = approved.find((s) => s.id === salonId);
+  if (!salon) redirect(`/pro/tableau-de-bord/reglages?salon=${approved[0].id}`);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Réglages — {salon!.name}</h1>
+        {approved.length > 1 && <SalonSwitcher salons={approved} currentId={salon!.id} />}
+      </div>
+
+      <form
+        action={updateSalonSettings}
+        className="mt-6 max-w-md space-y-5 rounded-xl border border-black/10 bg-white p-5"
+      >
+        <input type="hidden" name="salonId" value={salon!.id} />
+
+        <div>
+          <label className="block text-sm font-medium">Acompte à la réservation (%)</label>
+          <input
+            type="number"
+            name="depositPercent"
+            min={0}
+            max={100}
+            defaultValue={salon!.deposit_percent}
+            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+          />
+          {!salon!.has_iban && (
+            <p className="mt-1 text-xs text-ink/50">
+              Ajoutez un IBAN à votre fiche pour pouvoir encaisser un acompte (à venir avec
+              Stripe Connect).
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Délai d&apos;annulation (heures)</label>
+          <input
+            type="number"
+            name="cancellationHours"
+            min={0}
+            defaultValue={salon!.cancellation_hours}
+            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Rappel avant RDV (heures)</label>
+          <input
+            type="number"
+            name="reminderHours"
+            min={0}
+            defaultValue={salon!.reminder_hours}
+            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Points de fidélité par réservation</label>
+          <input
+            type="number"
+            name="loyaltyPointsPerBooking"
+            min={0}
+            defaultValue={salon!.loyalty_points_per_booking}
+            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+          />
+          <p className="mt-1 text-xs text-ink/50">0 = programme de fidélité désactivé.</p>
+        </div>
+
+        <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+          Enregistrer
+        </button>
+      </form>
+
+      <p className="mt-4 max-w-md text-xs text-ink/40">
+        L&apos;encaissement réel de l&apos;acompte et l&apos;envoi automatique des rappels
+        nécessitent Stripe et un fournisseur d&apos;e-mails/SMS configurés — ces réglages sont
+        prêts à être branchés dès leur intégration.
+      </p>
+    </div>
+  );
+}
