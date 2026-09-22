@@ -5,6 +5,7 @@ import type {
   ChatMessage,
   ClientNote,
   Giftcard,
+  OpeningHours,
   Product,
   Sale,
   SaleItem,
@@ -199,6 +200,80 @@ export async function getRecentSales(salonId: string, limit = 30) {
 
   if (error) throw error;
   return (data ?? []) as (Sale & { sale_items: SaleItem[] })[];
+}
+
+export interface SalonStats {
+  periodDays: number;
+  revenueBooked: number;
+  revenueCashed: number;
+  bookingsCount: number;
+  noShowCount: number;
+  noShowRate: number;
+  fillRate: number | null;
+}
+
+/** Statistiques simples sur les `periodDays` derniers jours. */
+export async function getSalonStats(salonId: string, periodDays = 30): Promise<SalonStats> {
+  const supabase = createClient();
+  const end = new Date();
+  const start = new Date(end.getTime() - periodDays * 24 * 60 * 60 * 1000);
+  const startDate = start.toISOString().slice(0, 10);
+  const endDate = end.toISOString().slice(0, 10);
+
+  const [{ data: bookings }, { data: sales }, { data: hours }, { data: closures }, { data: staff }] =
+    await Promise.all([
+      supabase
+        .from("bookings")
+        .select("duration_min, price, status, booking_date")
+        .eq("salon_id", salonId)
+        .gte("booking_date", startDate)
+        .lte("booking_date", endDate),
+      supabase.from("sales").select("total").eq("salon_id", salonId).gte("created_at", start.toISOString()),
+      supabase.from("opening_hours").select("*").eq("salon_id", salonId),
+      supabase
+        .from("closures")
+        .select("closed_date")
+        .eq("salon_id", salonId)
+        .gte("closed_date", startDate)
+        .lte("closed_date", endDate),
+      supabase.from("staff").select("id").eq("salon_id", salonId),
+    ]);
+
+  const bookingRows = (bookings ?? []) as { duration_min: number; price: number; status: string; booking_date: string }[];
+  const closedDates = new Set((closures ?? []).map((c) => c.closed_date));
+  const hoursByWeekday = new Map((hours ?? []).map((h: OpeningHours) => [h.weekday, h]));
+  const staffCount = Math.max(1, (staff ?? []).length);
+
+  const revenueBooked = bookingRows.filter((b) => b.status !== "cancelled").reduce((sum, b) => sum + Number(b.price), 0);
+  const revenueCashed = ((sales ?? []) as { total: number }[]).reduce((sum, s) => sum + Number(s.total), 0);
+  const bookingsCount = bookingRows.filter((b) => b.status !== "cancelled").length;
+  const noShowCount = bookingRows.filter((b) => b.status === "noshow").length;
+  const noShowRate = bookingsCount > 0 ? noShowCount / bookingsCount : 0;
+
+  const bookedMinutes = bookingRows
+    .filter((b) => b.status !== "cancelled")
+    .reduce((sum, b) => sum + b.duration_min, 0);
+
+  let capacityMinutes = 0;
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const iso = d.toISOString().slice(0, 10);
+    if (closedDates.has(iso)) continue;
+    const dayHours = hoursByWeekday.get(d.getDay());
+    if (!dayHours) continue;
+    const [oh, om] = dayHours.opens_at.split(":").map(Number);
+    const [ch, cm] = dayHours.closes_at.split(":").map(Number);
+    capacityMinutes += (ch * 60 + cm - (oh * 60 + om)) * staffCount;
+  }
+
+  return {
+    periodDays,
+    revenueBooked: Number(revenueBooked.toFixed(2)),
+    revenueCashed: Number(revenueCashed.toFixed(2)),
+    bookingsCount,
+    noShowCount,
+    noShowRate,
+    fillRate: capacityMinutes > 0 ? bookedMinutes / capacityMinutes : null,
+  };
 }
 
 export async function getUpcomingUnavailability(salonId: string) {
