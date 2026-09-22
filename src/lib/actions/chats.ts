@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireSalonAccess } from "@/lib/auth";
+import { getClients } from "@/lib/data/pro";
 
 function basePath(citySlug: string, categorySlug: string, salonSlug: string) {
   return `/${citySlug}/${categorySlug}/${salonSlug}`;
@@ -71,6 +72,47 @@ export async function sendClientMessage(formData: FormData) {
   }
 
   redirect(`${base}/messages/${chatId}`);
+}
+
+/** Envoie le même message à tous les clients d'un segment simple. */
+export async function broadcastToSegment(formData: FormData) {
+  const salonId = String(formData.get("salonId") ?? "");
+  const segment = String(formData.get("segment") ?? "all");
+  const text = String(formData.get("text") ?? "").trim();
+
+  await requireSalonAccess(salonId);
+  if (!text) return;
+
+  const clients = await getClients(salonId);
+  const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const targets =
+    segment === "inactive60" ? clients.filter((c) => c.lastVisit < cutoff) : clients;
+
+  const admin = createAdminClient();
+
+  for (const client of targets) {
+    const { data: existing } = await admin
+      .from("chats")
+      .select("id")
+      .eq("salon_id", salonId)
+      .eq("client_phone", client.phone)
+      .maybeSingle();
+
+    let chatId = existing?.id as string | undefined;
+    if (!chatId) {
+      const { data: created } = await admin
+        .from("chats")
+        .insert({ salon_id: salonId, client_name: client.name, client_phone: client.phone })
+        .select("id")
+        .single();
+      chatId = created?.id;
+    }
+    if (chatId) {
+      await admin.from("chat_messages").insert({ chat_id: chatId, sender: "salon", text });
+    }
+  }
+
+  revalidatePath("/pro/tableau-de-bord/messagerie");
 }
 
 export async function sendSalonReply(formData: FormData) {

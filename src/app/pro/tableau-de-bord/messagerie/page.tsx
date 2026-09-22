@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAccount } from "@/lib/auth";
 import { getMySalons, getChats, getChatMessages } from "@/lib/data/pro";
-import { sendSalonReply } from "@/lib/actions/chats";
+import { sendSalonReply, broadcastToSegment } from "@/lib/actions/chats";
 import { SalonSwitcher } from "@/components/SalonSwitcher";
 
 interface MessageriePageProps {
@@ -110,6 +110,35 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
           )}
         </div>
       </div>
+
+      <section className="mt-10 border-t border-black/5 pt-8">
+        <h2 className="text-lg font-medium">Message groupé</h2>
+        <p className="mt-1 text-sm text-ink/60">
+          Envoie le même message à un segment de clients (déjà contactés ou non).
+        </p>
+        <form action={broadcastToSegment} className="mt-3 space-y-3 rounded-xl border border-black/10 bg-white p-4">
+          <input type="hidden" name="salonId" value={salon!.id} />
+          <div>
+            <label className="block text-sm font-medium">Segment</label>
+            <select name="segment" className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm">
+              <option value="all">Tous les clients</option>
+              <option value="inactive60">Sans RDV depuis 60 jours</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Message</label>
+            <textarea
+              name="text"
+              rows={3}
+              required
+              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+            />
+          </div>
+          <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+            Envoyer au segment
+          </button>
+        </form>
+      </section>
     </div>
   );
 }
