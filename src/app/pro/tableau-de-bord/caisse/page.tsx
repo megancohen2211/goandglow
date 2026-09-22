@@ -17,7 +17,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -42,7 +42,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
 
       <section>
         <h2 className="text-lg font-medium">Rendez-vous à encaisser</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {uncashedBookings.map((b) => (
             <li key={b.id} className="flex items-center justify-between gap-4 px-4 py-3 text-sm">
               <span>
@@ -57,14 +57,14 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
                   placeholder="Pourboire"
                   min={0}
                   step="0.01"
-                  className="w-24 rounded-lg border border-black/10 px-2 py-1"
+                  className="w-24 rounded-lg border border-line px-2 py-1"
                 />
-                <select name="paymentMethod" className="rounded-lg border border-black/10 px-2 py-1">
+                <select name="paymentMethod" className="rounded-lg border border-line px-2 py-1">
                   <option value="cb">Carte</option>
                   <option value="especes">Espèces</option>
                   <option value="autre">Autre</option>
                 </select>
-                <button className="rounded-lg bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-dark">
+                <button className="rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-dark">
                   Encaisser
                 </button>
               </form>
@@ -78,7 +78,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
 
       <section>
         <h2 className="text-lg font-medium">Produits</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {products.map((p) => (
             <li key={p.id} className="flex items-center justify-between px-4 py-3 text-sm">
               <span>
@@ -89,34 +89,34 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
                   <input type="hidden" name="salonId" value={salon!.id} />
                   <input type="hidden" name="productId" value={p.id} />
                   <input type="hidden" name="delta" value="1" />
-                  <button className="rounded-lg border border-black/10 px-2 py-1 text-xs hover:bg-black/5">+1</button>
+                  <button className="rounded-full border border-line px-2 py-1 text-xs hover:bg-line/40">+1</button>
                 </form>
                 <form action={restockProduct}>
                   <input type="hidden" name="salonId" value={salon!.id} />
                   <input type="hidden" name="productId" value={p.id} />
                   <input type="hidden" name="delta" value="-1" />
-                  <button className="rounded-lg border border-black/10 px-2 py-1 text-xs hover:bg-black/5">-1</button>
+                  <button className="rounded-full border border-line px-2 py-1 text-xs hover:bg-line/40">-1</button>
                 </form>
               </div>
             </li>
           ))}
           {products.length === 0 && <li className="px-4 py-3 text-sm text-ink/50">Aucun produit.</li>}
         </ul>
-        <form action={addProduct} className="mt-3 flex flex-wrap items-end gap-3 rounded-xl border border-black/10 bg-white p-4">
+        <form action={addProduct} className="mt-3 flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-surface p-4">
           <input type="hidden" name="salonId" value={salon!.id} />
           <div>
             <label className="block text-xs font-medium">Nom</label>
-            <input type="text" name="name" required className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            <input type="text" name="name" required className="mt-1 rounded-lg border border-line px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-xs font-medium">Prix</label>
-            <input type="number" name="price" min={0} step="0.01" required className="mt-1 w-24 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            <input type="number" name="price" min={0} step="0.01" required className="mt-1 w-24 rounded-lg border border-line px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-xs font-medium">Stock initial</label>
-            <input type="number" name="qty" min={0} defaultValue={0} className="mt-1 w-24 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            <input type="number" name="qty" min={0} defaultValue={0} className="mt-1 w-24 rounded-lg border border-line px-3 py-2 text-sm" />
           </div>
-          <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             Ajouter au catalogue
           </button>
         </form>
@@ -125,7 +125,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
       {products.length > 0 && (
         <section>
           <h2 className="text-lg font-medium">Vente libre</h2>
-          <form action={cashFreeSale} className="mt-3 space-y-3 rounded-xl border border-black/10 bg-white p-4">
+          <form action={cashFreeSale} className="mt-3 space-y-3 rounded-2xl border border-line bg-surface p-4">
             <input type="hidden" name="salonId" value={salon!.id} />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {products.map((p) => (
@@ -139,7 +139,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
                     min={0}
                     max={p.qty}
                     defaultValue={0}
-                    className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
                   />
                 </div>
               ))}
@@ -147,21 +147,21 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
             <div className="flex flex-wrap items-end gap-3">
               <div>
                 <label className="block text-xs font-medium">Client (optionnel)</label>
-                <input type="text" name="clientName" className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+                <input type="text" name="clientName" className="mt-1 rounded-lg border border-line px-3 py-2 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium">Pourboire</label>
-                <input type="number" name="tip" min={0} step="0.01" className="mt-1 w-24 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+                <input type="number" name="tip" min={0} step="0.01" className="mt-1 w-24 rounded-lg border border-line px-3 py-2 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium">Paiement</label>
-                <select name="paymentMethod" className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm">
+                <select name="paymentMethod" className="mt-1 rounded-lg border border-line px-3 py-2 text-sm">
                   <option value="cb">Carte</option>
                   <option value="especes">Espèces</option>
                   <option value="autre">Autre</option>
                 </select>
               </div>
-              <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+              <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
                 Encaisser la vente
               </button>
             </div>
@@ -171,7 +171,7 @@ export default async function CaissePage({ searchParams }: CaissePageProps) {
 
       <section>
         <h2 className="text-lg font-medium">Encaissements récents</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {sales.map((sale) => (
             <li key={sale.id} className="px-4 py-3 text-sm">
               <div className="flex items-center justify-between">

@@ -89,7 +89,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
 
       <section className="mt-8">
         <h2 className="text-lg font-medium">Prestations</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {services.map((service) => (
             <li key={service.id} className="flex items-center justify-between px-4 py-3">
               <div>
@@ -123,7 +123,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
 
       <Link
         href={bookHref}
-        className="mt-8 inline-block w-full rounded-lg bg-brand px-5 py-3 text-center font-medium text-white hover:bg-brand-dark sm:w-auto"
+        className="mt-8 inline-block w-full rounded-full bg-brand px-5 py-3 text-center font-medium text-white hover:bg-brand-dark sm:w-auto"
       >
         Réserver un rendez-vous
       </Link>
@@ -144,15 +144,15 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
               name="phone"
               placeholder="Votre téléphone"
               defaultValue={searchParams.phone ?? ""}
-              className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+              className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
             />
-            <button className="rounded-lg border border-black/10 px-4 py-2 text-sm font-medium hover:bg-black/5">
+            <button className="rounded-full border border-line px-4 py-2 text-sm font-medium hover:bg-line/40">
               Voir mes points
             </button>
           </form>
 
           {loyaltyPoints !== null && (
-            <p className="mt-3 rounded-lg bg-brand-light px-4 py-3 text-sm text-brand-dark">
+            <p className="mt-3 rounded-2xl bg-brand-light px-4 py-3 text-sm text-brand-dark">
               Vous avez {loyaltyPoints} point(s) chez {salon.name}.
             </p>
           )}
@@ -167,7 +167,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
           </summary>
           <form
             action={startOrContinueChat}
-            className="mt-4 space-y-3 rounded-xl border border-black/10 bg-white p-4"
+            className="mt-4 space-y-3 rounded-2xl border border-line bg-surface p-4"
           >
             <input type="hidden" name="citySlug" value={params.citySlug} />
             <input type="hidden" name="categorySlug" value={params.categorySlug} />
@@ -181,7 +181,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
                   type="text"
                   name="clientName"
                   required
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
               <div>
@@ -190,7 +190,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
                   type="tel"
                   name="clientPhone"
                   required
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
             </div>
@@ -200,14 +200,14 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
                 name="text"
                 required
                 rows={3}
-                className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2"
               />
             </div>
             <p className="text-xs text-ink/50">
               Vous recevrez un lien pour suivre la conversation ; conservez-le, il n&apos;y a pas
               de compte client dans cette version.
             </p>
-            <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+            <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
               Envoyer le message
             </button>
           </form>
@@ -218,7 +218,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
         <h2 className="text-lg font-medium">Avis clients</h2>
 
         {searchParams.avis === "envoye" && (
-          <p className="mt-3 rounded-lg bg-brand-light px-4 py-3 text-sm text-brand-dark">
+          <p className="mt-3 rounded-2xl bg-brand-light px-4 py-3 text-sm text-brand-dark">
             Merci, votre avis a été publié.
           </p>
         )}
@@ -230,7 +230,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
 
         <div className="mt-4 space-y-4">
           {reviews.map((review) => (
-            <div key={review.id} className="rounded-xl border border-black/10 bg-white p-4">
+            <div key={review.id} className="rounded-2xl border border-line bg-surface p-4">
               <div className="flex items-center justify-between">
                 <p className="font-medium">{review.client_name}</p>
                 <p className="text-sm text-ink/50">
@@ -272,7 +272,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
           <form
             action={submitReview}
             encType="multipart/form-data"
-            className="mt-4 space-y-3 rounded-xl border border-black/10 bg-white p-4"
+            className="mt-4 space-y-3 rounded-2xl border border-line bg-surface p-4"
           >
             <input type="hidden" name="citySlug" value={params.citySlug} />
             <input type="hidden" name="categorySlug" value={params.categorySlug} />
@@ -286,7 +286,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
                   type="text"
                   name="clientName"
                   required
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
               <div>
@@ -294,7 +294,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
                 <select
                   name="rating"
                   defaultValue={5}
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 >
                   {[5, 4, 3, 2, 1].map((n) => (
                     <option key={n} value={n}>
@@ -310,7 +310,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
               <textarea
                 name="text"
                 rows={3}
-                className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2"
               />
             </div>
 
@@ -327,7 +327,7 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
 
             <button
               type="submit"
-              className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark"
+              className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark"
             >
               Publier mon avis
             </button>

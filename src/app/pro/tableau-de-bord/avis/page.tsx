@@ -16,7 +16,7 @@ export default async function AvisPage({ searchParams }: AvisPageProps) {
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -44,7 +44,7 @@ export default async function AvisPage({ searchParams }: AvisPageProps) {
 
       <div className="mt-6 space-y-4">
         {reviews.map((review) => (
-          <div key={review.id} className="rounded-xl border border-black/10 bg-white p-4">
+          <div key={review.id} className="rounded-2xl border border-line bg-surface p-4">
             <div className="flex items-center justify-between">
               <p className="font-medium">{review.client_name}</p>
               <p className="text-sm text-ink/50">{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</p>
@@ -72,9 +72,9 @@ export default async function AvisPage({ searchParams }: AvisPageProps) {
                   type="text"
                   name="reply"
                   placeholder="Répondre à cet avis..."
-                  className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+                  className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
                 />
-                <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+                <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
                   Répondre
                 </button>
               </form>

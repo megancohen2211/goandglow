@@ -62,7 +62,7 @@ export default async function InvitationPage({ params, searchParams }: Invitatio
               </label>
               <button
                 type="submit"
-                className="w-full rounded-lg bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
+                className="w-full rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
               >
                 Accepter et recevoir mon code
               </button>
@@ -78,12 +78,12 @@ export default async function InvitationPage({ params, searchParams }: Invitatio
                   inputMode="numeric"
                   required
                   autoFocus
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 tracking-widest"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2 tracking-widest"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full rounded-lg bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
+                className="w-full rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
               >
                 Valider et publier ma fiche
               </button>

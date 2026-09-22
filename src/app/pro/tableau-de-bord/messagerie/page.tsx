@@ -22,7 +22,7 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -44,7 +44,7 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
       </div>
 
       <div className="mt-6 grid grid-cols-[220px_1fr] gap-4">
-        <ul className="divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="divide-y divide-line rounded-2xl border border-line bg-surface">
           {chats.map((chat) => (
             <li key={chat.id}>
               <Link
@@ -62,14 +62,14 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
           {chats.length === 0 && <li className="px-3 py-2 text-sm text-ink/50">Aucun message.</li>}
         </ul>
 
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           {activeChatId ? (
             <>
               <div className="max-h-96 space-y-3 overflow-y-auto">
                 {messages.map((m) => (
                   <div
                     key={m.id}
-                    className={`max-w-[80%] rounded-xl px-4 py-2 text-sm ${
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                       m.sender === "salon" ? "ml-auto bg-brand text-white" : "bg-black/5 text-ink"
                     }`}
                   >
@@ -84,7 +84,7 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
                     <input type="hidden" name="salonId" value={salon!.id} />
                     <input type="hidden" name="chatId" value={activeChatId} />
                     <input type="hidden" name="text" value={reply} />
-                    <button className="rounded-full border border-black/10 px-3 py-1 text-xs hover:bg-black/5">
+                    <button className="rounded-full border border-line px-3 py-1 text-xs hover:bg-black/5">
                       {reply.length > 40 ? `${reply.slice(0, 40)}…` : reply}
                     </button>
                   </form>
@@ -98,9 +98,9 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
                   type="text"
                   name="text"
                   placeholder="Votre réponse..."
-                  className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+                  className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
                 />
-                <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+                <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
                   Envoyer
                 </button>
               </form>
@@ -116,11 +116,11 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
         <p className="mt-1 text-sm text-ink/60">
           Envoie le même message à un segment de clients (déjà contactés ou non).
         </p>
-        <form action={broadcastToSegment} className="mt-3 space-y-3 rounded-xl border border-black/10 bg-white p-4">
+        <form action={broadcastToSegment} className="mt-3 space-y-3 rounded-2xl border border-line bg-surface p-4">
           <input type="hidden" name="salonId" value={salon!.id} />
           <div>
             <label className="block text-sm font-medium">Segment</label>
-            <select name="segment" className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm">
+            <select name="segment" className="mt-1 rounded-lg border border-line px-3 py-2 text-sm">
               <option value="all">Tous les clients</option>
               <option value="inactive60">Sans RDV depuis 60 jours</option>
             </select>
@@ -131,10 +131,10 @@ export default async function MessageriePage({ searchParams }: MessageriePagePro
               name="text"
               rows={3}
               required
-              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
             />
           </div>
-          <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+          <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
             Envoyer au segment
           </button>
         </form>

@@ -21,7 +21,7 @@ export default async function DashboardOverviewPage() {
 
       <div className="mt-6 space-y-3">
         {salons.length === 0 && (
-          <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+          <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
             Vous n&apos;avez pas encore de fiche salon.{" "}
             <Link href="/pro/inscription" className="underline">
               Créer une fiche
@@ -32,7 +32,7 @@ export default async function DashboardOverviewPage() {
         {salons.map((salon) => (
           <div
             key={salon.id}
-            className="flex items-center justify-between rounded-xl border border-black/10 bg-white p-4"
+            className="flex items-center justify-between rounded-2xl border border-line bg-surface p-4"
           >
             <div>
               <p className="font-medium">{salon.name}</p>
@@ -43,7 +43,7 @@ export default async function DashboardOverviewPage() {
             {salon.status === "approved" && (
               <Link
                 href={`/pro/tableau-de-bord/agenda?salon=${salon.id}`}
-                className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+                className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
               >
                 Voir l&apos;agenda
               </Link>

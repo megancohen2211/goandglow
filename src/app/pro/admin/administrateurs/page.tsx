@@ -24,7 +24,7 @@ export default async function AdministrateursPage({ searchParams }: Administrate
         </p>
       )}
 
-      <ul className="mt-6 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+      <ul className="mt-6 divide-y divide-line rounded-2xl border border-line bg-surface">
         {staff.map((a) => (
           <li key={a.id} className="flex items-center justify-between px-4 py-3 text-sm">
             <span>
@@ -46,9 +46,9 @@ export default async function AdministrateursPage({ searchParams }: Administrate
           type="email"
           required
           placeholder="email@exemple.fr"
-          className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+          className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
         />
-        <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           Ajouter comme admin
         </button>
       </form>

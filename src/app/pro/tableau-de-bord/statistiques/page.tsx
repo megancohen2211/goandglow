@@ -14,7 +14,7 @@ export default async function StatistiquesPage({ searchParams }: StatsPageProps)
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -35,21 +35,21 @@ export default async function StatistiquesPage({ searchParams }: StatsPageProps)
       <p className="mt-1 text-sm text-ink/50">30 derniers jours</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           <p className="text-xs text-ink/50">CA encaissé (caisse)</p>
           <p className="mt-1 text-2xl font-semibold">{stats.revenueCashed} €</p>
         </div>
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           <p className="text-xs text-ink/50">CA réservé (prévisionnel)</p>
           <p className="mt-1 text-2xl font-semibold">{stats.revenueBooked} €</p>
         </div>
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           <p className="text-xs text-ink/50">Taux de remplissage</p>
           <p className="mt-1 text-2xl font-semibold">
             {stats.fillRate !== null ? `${Math.round(stats.fillRate * 100)}%` : "—"}
           </p>
         </div>
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           <p className="text-xs text-ink/50">Taux d&apos;absence</p>
           <p className="mt-1 text-2xl font-semibold">
             {Math.round(stats.noShowRate * 100)}% <span className="text-sm text-ink/40">({stats.noShowCount})</span>

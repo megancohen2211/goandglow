@@ -2,10 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #f6f3f8;
+  --surface: #ffffff;
+  --ink: #241b33;
+  --muted: #6b6280;
+  --line: #e4deec;
+  --primary: #4a2c6d;
+  --primary-dark: #35204e;
+  --accent: #ff9e7a;
+  --accent-soft: #ffe9df;
+  --accent-ink: #7a3419;
+  --ok-bg: #ddefe6;
+  --ok-ink: #1e5a3c;
+  --danger: #b3261e;
+  --eclat-bg: #eadff7;
+  --eclat-ink: #3a1f5c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17111f;
+    --surface: #221a2e;
+    --ink: #f1ecf7;
+    --muted: #a79db8;
+    --line: #382d48;
+    --primary: #c4a6ea;
+    --primary-dark: #d9c2fb;
+    --accent-soft: #3a2419;
+    --accent-ink: #ffc2a8;
+    --ok-bg: #1c3a2b;
+    --ok-ink: #a9e3c4;
+    --danger: #ff8a80;
+    --eclat-bg: #3a2a55;
+    --eclat-ink: #e4d3fa;
+  }
+}
+
 html {
   color-scheme: light;
 }
 
 body {
   @apply bg-paper text-ink antialiased;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading), var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }

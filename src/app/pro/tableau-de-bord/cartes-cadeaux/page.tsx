@@ -15,7 +15,7 @@ export default async function ProGiftcardsPage({ searchParams }: GiftcardsPagePr
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -34,7 +34,7 @@ export default async function ProGiftcardsPage({ searchParams }: GiftcardsPagePr
         {approved.length > 1 && <SalonSwitcher salons={approved} currentId={salon!.id} />}
       </div>
 
-      <form action={issueGiftcard} className="mt-6 flex flex-wrap items-end gap-3 rounded-xl border border-black/10 bg-white p-4">
+      <form action={issueGiftcard} className="mt-6 flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-surface p-4">
         <input type="hidden" name="salonId" value={salon!.id} />
         <div>
           <label className="block text-sm font-medium">Montant</label>
@@ -44,7 +44,7 @@ export default async function ProGiftcardsPage({ searchParams }: GiftcardsPagePr
             min={1}
             step="0.01"
             required
-            className="mt-1 w-32 rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-32 rounded-lg border border-line px-3 py-2"
           />
         </div>
         <div className="flex-1">
@@ -52,15 +52,15 @@ export default async function ProGiftcardsPage({ searchParams }: GiftcardsPagePr
           <input
             type="text"
             name="boughtFor"
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2"
           />
         </div>
-        <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           Émettre
         </button>
       </form>
 
-      <ul className="mt-6 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+      <ul className="mt-6 divide-y divide-line rounded-2xl border border-line bg-surface">
         {giftcards.map((gc) => (
           <li key={gc.id} className="flex items-center justify-between px-4 py-3 text-sm">
             <div>

@@ -47,7 +47,7 @@ export default async function ConfirmationPage({
 
       <Link
         href={`/${params.citySlug}/${params.categorySlug}/${params.salonSlug}`}
-        className="mt-8 inline-block rounded-lg border border-black/10 px-5 py-2 text-sm font-medium hover:bg-black/5"
+        className="mt-8 inline-block rounded-full border border-line px-5 py-2 text-sm font-medium hover:bg-line/40"
       >
         Retour à la fiche du salon
       </Link>

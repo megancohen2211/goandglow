@@ -23,11 +23,11 @@ export default function AdminNouveauSalonPage({ searchParams }: NouveauPageProps
       <form action={createSalonInvitation} className="mt-6 space-y-4">
         <div>
           <label className="block text-sm font-medium">Nom du salon</label>
-          <input name="name" required className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2" />
+          <input name="name" required className="mt-1 w-full rounded-lg border border-line px-3 py-2" />
         </div>
         <div>
           <label className="block text-sm font-medium">Catégorie</label>
-          <select name="type" required className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+          <select name="type" required className="mt-1 w-full rounded-lg border border-line px-3 py-2">
             {CATEGORIES.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.label}
@@ -37,19 +37,19 @@ export default function AdminNouveauSalonPage({ searchParams }: NouveauPageProps
         </div>
         <div>
           <label className="block text-sm font-medium">Ville</label>
-          <input name="city" defaultValue="Marseille" required className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2" />
+          <input name="city" defaultValue="Marseille" required className="mt-1 w-full rounded-lg border border-line px-3 py-2" />
         </div>
         <div>
           <label className="block text-sm font-medium">Téléphone</label>
-          <input name="phone" className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2" />
+          <input name="phone" className="mt-1 w-full rounded-lg border border-line px-3 py-2" />
         </div>
         <div>
           <label className="block text-sm font-medium">E-mail du salon</label>
-          <input name="email" type="email" required className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2" />
+          <input name="email" type="email" required className="mt-1 w-full rounded-lg border border-line px-3 py-2" />
         </div>
         <button
           type="submit"
-          className="w-full rounded-lg bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
+          className="w-full rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
         >
           Envoyer l&apos;invitation
         </button>

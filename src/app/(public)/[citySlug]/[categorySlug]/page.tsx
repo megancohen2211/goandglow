@@ -47,7 +47,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </h1>
 
       {salons.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-black/10 p-8 text-center text-ink/50">
+        <p className="mt-6 rounded-2xl border border-dashed border-line p-8 text-center text-ink/50">
           Aucun salon "{category.label}" validé à {city.label} pour le moment.
         </p>
       ) : (

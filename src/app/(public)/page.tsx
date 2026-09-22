@@ -37,11 +37,11 @@ export default async function HomePage({ searchParams }: HomeProps) {
             name="q"
             placeholder="Ex. « balayage samedi matin, moins de 140 € »"
             defaultValue={searchParams.q}
-            className="flex-1 rounded-lg border border-black/10 px-4 py-2"
+            className="flex-1 rounded-lg border border-line px-4 py-2"
           />
           <button
             type="submit"
-            className="rounded-lg bg-brand px-5 py-2 font-medium text-white hover:bg-brand-dark"
+            className="rounded-full bg-brand px-5 py-2 font-medium text-white hover:bg-brand-dark"
           >
             Rechercher
           </button>
@@ -53,7 +53,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
               key={cat.slug}
               href={`/?ville=${citySlug}&categorie=${cat.slug}`}
               className={`rounded-full px-3 py-1 ${
-                categorySlug === cat.slug ? "bg-brand text-white" : "bg-white text-ink/70"
+                categorySlug === cat.slug ? "bg-brand text-white" : "bg-surface text-ink/70"
               }`}
             >
               {cat.label}
@@ -71,7 +71,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
         </div>
 
         {filtered.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-black/10 p-8 text-center text-ink/50">
+          <p className="rounded-2xl border border-dashed border-line p-8 text-center text-ink/50">
             Aucun salon ne correspond pour l'instant. Nous démarrons à Marseille — d'autres
             villes arrivent bientôt.
           </p>

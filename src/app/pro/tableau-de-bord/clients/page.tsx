@@ -16,7 +16,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -46,7 +46,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
       </div>
 
       <div className="mt-6 grid grid-cols-[280px_1fr] gap-4">
-        <ul className="divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="divide-y divide-line rounded-2xl border border-line bg-surface">
           {clients.map((client) => (
             <li key={client.phone}>
               <Link
@@ -66,7 +66,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
           {clients.length === 0 && <li className="px-3 py-2 text-sm text-ink/50">Aucun client pour l&apos;instant.</li>}
         </ul>
 
-        <div className="rounded-xl border border-black/10 bg-white p-4">
+        <div className="rounded-2xl border border-line bg-surface p-4">
           {activeClient ? (
             <>
               <h2 className="font-medium">{activeClient.name}</h2>
@@ -102,9 +102,9 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                   type="text"
                   name="note"
                   placeholder="Ajouter une note..."
-                  className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+                  className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
                 />
-                <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+                <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
                   Ajouter
                 </button>
               </form>

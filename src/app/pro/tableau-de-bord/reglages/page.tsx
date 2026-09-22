@@ -15,7 +15,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -34,7 +34,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
 
       <form
         action={updateSalonSettings}
-        className="mt-6 max-w-md space-y-5 rounded-xl border border-black/10 bg-white p-5"
+        className="mt-6 max-w-md space-y-5 rounded-2xl border border-line bg-surface p-5"
       >
         <input type="hidden" name="salonId" value={salon!.id} />
 
@@ -46,7 +46,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
             min={0}
             max={100}
             defaultValue={salon!.deposit_percent}
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2"
           />
           {!salon!.has_iban && (
             <p className="mt-1 text-xs text-ink/50">
@@ -63,7 +63,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
             name="cancellationHours"
             min={0}
             defaultValue={salon!.cancellation_hours}
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2"
           />
         </div>
 
@@ -74,7 +74,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
             name="reminderHours"
             min={0}
             defaultValue={salon!.reminder_hours}
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2"
           />
         </div>
 
@@ -85,12 +85,12 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
             name="loyaltyPointsPerBooking"
             min={0}
             defaultValue={salon!.loyalty_points_per_booking}
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2"
           />
           <p className="mt-1 text-xs text-ink/50">0 = programme de fidélité désactivé.</p>
         </div>
 
-        <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+        <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
           Enregistrer
         </button>
       </form>
@@ -101,7 +101,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
         prêts à être branchés dès leur intégration.
       </p>
 
-      <section className="mt-8 max-w-md rounded-xl border border-black/10 bg-white p-5">
+      <section className="mt-8 max-w-md rounded-2xl border border-line bg-surface p-5">
         <h2 className="text-lg font-medium">Synchronisation calendrier</h2>
         <p className="mt-1 text-sm text-ink/60">
           Abonnez Google Agenda ou l&apos;app Calendrier de votre téléphone à ce lien
@@ -111,7 +111,7 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
         <input
           readOnly
           value={`${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/ical/${salon!.calendar_token}`}
-          className="mt-3 w-full rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-xs"
+          className="mt-3 w-full rounded-lg border border-line bg-black/5 px-3 py-2 text-xs"
         />
         <form action={regenerateCalendarToken} className="mt-3">
           <input type="hidden" name="salonId" value={salon!.id} />

@@ -17,7 +17,7 @@ export default async function AdminQueuePage() {
         <div className="mt-4 space-y-3">
           {pending.length === 0 && <p className="text-ink/50">Rien à valider pour l&apos;instant.</p>}
           {pending.map((salon) => (
-            <div key={salon.id} className="rounded-xl border border-black/10 bg-white p-4">
+            <div key={salon.id} className="rounded-2xl border border-line bg-surface p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-medium">{salon.name}</p>
@@ -29,13 +29,13 @@ export default async function AdminQueuePage() {
                 <div className="flex shrink-0 gap-2">
                   <form action={approveSalon}>
                     <input type="hidden" name="salonId" value={salon.id} />
-                    <button className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark">
+                    <button className="rounded-full bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark">
                       Valider
                     </button>
                   </form>
                   <form action={rejectSalon}>
                     <input type="hidden" name="salonId" value={salon.id} />
-                    <button className="rounded-lg border border-black/10 px-3 py-1.5 text-sm hover:bg-black/5">
+                    <button className="rounded-full border border-line px-3 py-1.5 text-sm hover:bg-line/40">
                       Refuser
                     </button>
                   </form>
@@ -50,7 +50,7 @@ export default async function AdminQueuePage() {
         <h2 className="text-lg font-medium">Invitations envoyées, en attente d&apos;acceptation ({invited.length})</h2>
         <div className="mt-3 space-y-2">
           {invited.map((salon) => (
-            <div key={salon.id} className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm">
+            <div key={salon.id} className="rounded-lg border border-line bg-surface px-4 py-2 text-sm">
               {salon.name} — {salon.city} — envoyée le{" "}
               {salon.invitation_sent_at
                 ? new Date(salon.invitation_sent_at).toLocaleDateString("fr-FR")
@@ -67,7 +67,7 @@ export default async function AdminQueuePage() {
           {approved.map((salon) => (
             <div
               key={salon.id}
-              className="flex items-center justify-between rounded-lg border border-black/10 bg-white px-4 py-2 text-sm"
+              className="flex items-center justify-between rounded-lg border border-line bg-surface px-4 py-2 text-sm"
             >
               <span>
                 {salon.name} — {salon.city}

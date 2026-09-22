@@ -32,7 +32,7 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -58,7 +58,7 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
 
       <section>
         <h2 className="text-lg font-medium">Équipe</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {staff.map((member) => (
             <li key={member.id} className="flex items-center justify-between px-4 py-3 text-sm">
               {member.name}
@@ -78,9 +78,9 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
             name="name"
             placeholder="Nom du membre"
             required
-            className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+            className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
           />
-          <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             Ajouter
           </button>
         </form>
@@ -95,7 +95,7 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
               <form
                 key={weekday}
                 action={setOpeningHours}
-                className="flex items-center gap-3 rounded-lg border border-black/10 bg-white px-4 py-2 text-sm"
+                className="flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-2 text-sm"
               >
                 <input type="hidden" name="salonId" value={salon!.id} />
                 <input type="hidden" name="weekday" value={weekday} />
@@ -104,20 +104,20 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
                   type="time"
                   name="opensAt"
                   defaultValue={existing?.opens_at?.slice(0, 5) ?? ""}
-                  className="rounded-lg border border-black/10 px-2 py-1"
+                  className="rounded-lg border border-line px-2 py-1"
                 />
                 <span>—</span>
                 <input
                   type="time"
                   name="closesAt"
                   defaultValue={existing?.closes_at?.slice(0, 5) ?? ""}
-                  className="rounded-lg border border-black/10 px-2 py-1"
+                  className="rounded-lg border border-line px-2 py-1"
                 />
                 <label className="ml-2 flex items-center gap-1 text-ink/50">
                   <input type="checkbox" name="closed" defaultChecked={!existing} />
                   Fermé
                 </label>
-                <button className="ml-auto rounded-lg border border-black/10 px-3 py-1 hover:bg-black/5">
+                <button className="ml-auto rounded-full border border-line px-3 py-1 hover:bg-line/40">
                   Enregistrer
                 </button>
               </form>
@@ -128,7 +128,7 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
 
       <section>
         <h2 className="text-lg font-medium">Fermetures exceptionnelles</h2>
-        <ul className="mt-3 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+        <ul className="mt-3 divide-y divide-line rounded-2xl border border-line bg-surface">
           {closures.map((closure) => (
             <li key={closure.id} className="flex items-center justify-between px-4 py-3 text-sm">
               {new Date(`${closure.closed_date}T00:00:00`).toLocaleDateString("fr-FR")}
@@ -149,9 +149,9 @@ export default async function EquipePage({ searchParams }: EquipePageProps) {
             type="date"
             name="closedDate"
             required
-            className="rounded-lg border border-black/10 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
-          <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+          <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
             Ajouter une fermeture
           </button>
         </form>

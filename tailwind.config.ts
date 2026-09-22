@@ -8,13 +8,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#161616",
-        paper: "#fdfcfb",
+        ink: "var(--ink)",
+        paper: "var(--bg)",
+        surface: "var(--surface)",
+        line: "var(--line)",
         brand: {
-          DEFAULT: "#b4574a",
-          dark: "#8f3f34",
-          light: "#f4e3df",
+          DEFAULT: "var(--primary)",
+          dark: "var(--primary-dark)",
+          light: "var(--eclat-bg)",
         },
+        accent: {
+          DEFAULT: "var(--accent)",
+          soft: "var(--accent-soft)",
+          ink: "var(--accent-ink)",
+        },
+        ok: {
+          bg: "var(--ok-bg)",
+          ink: "var(--ok-ink)",
+        },
+        danger: "var(--danger)",
+      },
+      fontFamily: {
+        sans: ["var(--font-body)", "system-ui", "sans-serif"],
+        heading: ["var(--font-heading)", "var(--font-body)", "system-ui", "sans-serif"],
       },
     },
   },

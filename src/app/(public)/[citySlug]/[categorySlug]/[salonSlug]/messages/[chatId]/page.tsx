@@ -36,7 +36,7 @@ export default async function ChatThreadPage({ params }: ChatThreadPageProps) {
         {(messages ?? []).map((m) => (
           <div
             key={m.id}
-            className={`max-w-[80%] rounded-xl px-4 py-2 text-sm ${
+            className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
               m.sender === "client" ? "ml-auto bg-brand text-white" : "bg-black/5 text-ink"
             }`}
           >
@@ -58,9 +58,9 @@ export default async function ChatThreadPage({ params }: ChatThreadPageProps) {
           name="text"
           required
           placeholder="Votre message..."
-          className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
+          className="flex-1 rounded-lg border border-line px-3 py-2 text-sm"
         />
-        <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           Envoyer
         </button>
       </form>

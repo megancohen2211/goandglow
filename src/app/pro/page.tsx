@@ -12,13 +12,13 @@ export default function ProLandingPage() {
       <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
         <Link
           href="/pro/inscription"
-          className="rounded-lg bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
+          className="rounded-full bg-brand px-6 py-3 font-medium text-white hover:bg-brand-dark"
         >
           Créer ma fiche salon
         </Link>
         <Link
           href="/pro/connexion"
-          className="rounded-lg border border-black/10 px-6 py-3 font-medium hover:bg-black/5"
+          className="rounded-full border border-line px-6 py-3 font-medium hover:bg-line/40"
         >
           Se connecter
         </Link>

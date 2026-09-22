@@ -35,9 +35,9 @@ export default async function GiftcardsPage({ searchParams }: GiftcardsPageProps
           name="code"
           placeholder="Code de la carte"
           defaultValue={searchParams.code ?? ""}
-          className="flex-1 rounded-lg border border-black/10 px-3 py-2 uppercase"
+          className="flex-1 rounded-lg border border-line px-3 py-2 uppercase"
         />
-        <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+        <button className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
           Vérifier
         </button>
       </form>
@@ -47,7 +47,7 @@ export default async function GiftcardsPage({ searchParams }: GiftcardsPageProps
       )}
 
       {giftcard && (
-        <div className="mt-6 rounded-xl border border-black/10 bg-white p-4">
+        <div className="mt-6 rounded-2xl border border-line bg-surface p-4">
           <p className="font-medium">{giftcard.salons?.name ?? "Salon"}</p>
           <p className="mt-1 text-2xl font-semibold text-brand-dark">{giftcard.balance} €</p>
           <p className="text-sm text-ink/50">sur {giftcard.amount} € offerts</p>

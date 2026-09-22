@@ -29,7 +29,7 @@ export default async function CityPage({ params }: CityPageProps) {
           <Link
             key={cat.slug}
             href={`/${city.slug}/${cat.slug}`}
-            className="rounded-xl border border-black/10 bg-white p-4 hover:border-brand"
+            className="rounded-2xl border border-line bg-surface p-4 hover:border-brand"
           >
             {cat.label}
           </Link>

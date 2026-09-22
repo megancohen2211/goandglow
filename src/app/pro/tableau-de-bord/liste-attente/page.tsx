@@ -15,7 +15,7 @@ export default async function WaitlistPage({ searchParams }: WaitlistPageProps) 
 
   if (approved.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-black/10 p-6 text-ink/50">
+      <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
         Aucune fiche publiée pour l&apos;instant.
       </p>
     );
@@ -34,7 +34,7 @@ export default async function WaitlistPage({ searchParams }: WaitlistPageProps) 
         {approved.length > 1 && <SalonSwitcher salons={approved} currentId={salon!.id} />}
       </div>
 
-      <ul className="mt-6 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+      <ul className="mt-6 divide-y divide-line rounded-2xl border border-line bg-surface">
         {entries.map((entry) => (
           <li key={entry.id} className="flex items-center justify-between px-4 py-3 text-sm">
             <div>
@@ -52,7 +52,7 @@ export default async function WaitlistPage({ searchParams }: WaitlistPageProps) 
                 <form action={markWaitlistNotified}>
                   <input type="hidden" name="id" value={entry.id} />
                   <input type="hidden" name="salonId" value={salon!.id} />
-                  <button className="rounded-lg bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-dark">
+                  <button className="rounded-full bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-dark">
                     Marquer prévenu
                   </button>
                 </form>
@@ -60,7 +60,7 @@ export default async function WaitlistPage({ searchParams }: WaitlistPageProps) 
               <form action={removeFromWaitlist}>
                 <input type="hidden" name="id" value={entry.id} />
                 <input type="hidden" name="salonId" value={salon!.id} />
-                <button className="rounded-lg border border-black/10 px-3 py-1.5 text-xs hover:bg-black/5">
+                <button className="rounded-full border border-line px-3 py-1.5 text-xs hover:bg-line/40">
                   Retirer
                 </button>
               </form>

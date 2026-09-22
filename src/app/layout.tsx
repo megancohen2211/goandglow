@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
+import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import "./globals.css";
+
+const heading = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-heading",
+});
+
+const body = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -12,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={`${heading.variable} ${body.variable}`}>
       <body>{children}</body>
     </html>
   );

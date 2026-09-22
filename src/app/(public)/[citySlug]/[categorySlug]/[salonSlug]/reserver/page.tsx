@@ -37,7 +37,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
 
         <div>
           <label className="block text-sm font-medium">Prestation</label>
-          <select name="serviceId" required className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+          <select name="serviceId" required className="mt-1 w-full rounded-lg border border-line px-3 py-2">
             {services.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name} — {s.duration_min} min — {s.price} €
@@ -48,7 +48,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
 
         <div>
           <label className="block text-sm font-medium">Professionnel</label>
-          <select name="staffId" className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+          <select name="staffId" className="mt-1 w-full rounded-lg border border-line px-3 py-2">
             <option value="">Peu importe</option>
             {staff.map((member) => (
               <option key={member.id} value={member.id}>
@@ -67,7 +67,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
               required
               min={today}
               defaultValue={today}
-              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
             />
           </div>
           <div>
@@ -77,14 +77,14 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
               name="time"
               required
               defaultValue="10:00"
-              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
             />
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium">Nombre de personnes</label>
-          <select name="peopleCount" defaultValue={1} className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+          <select name="peopleCount" defaultValue={1} className="mt-1 w-full rounded-lg border border-line px-3 py-2">
             {[1, 2, 3, 4].map((n) => (
               <option key={n} value={n}>
                 {n}
@@ -107,7 +107,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                 type="text"
                 name={`name_${i}`}
                 required={i === 0}
-                className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2"
               />
             </div>
             <div>
@@ -116,7 +116,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                 type="tel"
                 name={`phone_${i}`}
                 required={i === 0}
-                className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2"
               />
             </div>
           </div>
@@ -128,13 +128,13 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
             type="text"
             name="giftcardCode"
             placeholder="ex. A1B2C3D4"
-            className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 uppercase"
+            className="mt-1 w-full rounded-lg border border-line px-3 py-2 uppercase"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
+          className="w-full rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
         >
           Confirmer la réservation
         </button>
@@ -147,7 +147,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
         </p>
 
         {searchParams["liste-attente"] === "envoyee" && (
-          <p className="mt-3 rounded-lg bg-brand-light px-4 py-3 text-sm text-brand-dark">
+          <p className="mt-3 rounded-2xl bg-brand-light px-4 py-3 text-sm text-brand-dark">
             C&apos;est noté, le salon vous contactera si un créneau se libère.
           </p>
         )}
@@ -156,7 +156,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
           <summary className="cursor-pointer text-sm font-medium text-brand-dark">
             Rejoindre la liste d&apos;attente
           </summary>
-          <form action={joinWaitlist} className="mt-4 space-y-4 rounded-xl border border-black/10 bg-white p-4">
+          <form action={joinWaitlist} className="mt-4 space-y-4 rounded-2xl border border-line bg-surface p-4">
             <input type="hidden" name="citySlug" value={params.citySlug} />
             <input type="hidden" name="categorySlug" value={params.categorySlug} />
             <input type="hidden" name="salonSlug" value={params.salonSlug} />
@@ -164,7 +164,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
 
             <div>
               <label className="block text-sm font-medium">Prestation souhaitée</label>
-              <select name="serviceId" className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2">
+              <select name="serviceId" className="mt-1 w-full rounded-lg border border-line px-3 py-2">
                 <option value="">Peu importe</option>
                 {services.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -181,7 +181,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                   type="date"
                   name="wantedDate"
                   min={today}
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
               <div>
@@ -190,7 +190,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                   type="text"
                   name="period"
                   placeholder="ex. samedi matin"
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                   type="text"
                   name="clientName"
                   required
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
               <div>
@@ -211,14 +211,14 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                   type="tel"
                   name="clientPhone"
                   required
-                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                  className="mt-1 w-full rounded-lg border border-line px-3 py-2"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-lg border border-black/10 px-5 py-2.5 text-sm font-medium hover:bg-black/5"
+              className="w-full rounded-full border border-line px-5 py-2.5 text-sm font-medium hover:bg-line/40"
             >
               Rejoindre la liste d&apos;attente
             </button>
