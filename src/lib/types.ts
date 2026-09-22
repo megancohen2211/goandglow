@@ -37,6 +37,11 @@ export interface Salon {
   invitation_token: string | null;
   invitation_sent_at: string | null;
   invitation_accepted_at: string | null;
+  deposit_percent: number;
+  cancellation_hours: number;
+  reminder_hours: number;
+  loyalty_points_per_booking: number;
+  calendar_token: string;
   created_at: string;
 }
 
@@ -101,7 +106,124 @@ export interface Review {
   rating: number;
   text: string | null;
   reply: string | null;
+  photos: string[];
   created_at: string;
+}
+
+export interface Waitlist {
+  id: string;
+  salon_id: string;
+  service_id: string | null;
+  wanted_date: string | null;
+  period: string | null;
+  client_name: string;
+  client_phone: string | null;
+  notified: boolean;
+  created_at: string;
+}
+
+export interface Chat {
+  id: string;
+  salon_id: string;
+  client_account_id: string | null;
+  client_name: string | null;
+  client_phone: string | null;
+  created_at: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  chat_id: string;
+  sender: "client" | "salon";
+  text: string;
+  created_at: string;
+}
+
+export interface Giftcard {
+  id: string;
+  salon_id: string;
+  code: string;
+  amount: number;
+  balance: number;
+  bought_for: string | null;
+  created_at: string;
+}
+
+export interface GiftcardRedemption {
+  id: string;
+  giftcard_id: string;
+  booking_id: string | null;
+  amount: number;
+  created_at: string;
+}
+
+export interface Product {
+  id: string;
+  salon_id: string;
+  name: string;
+  price: number;
+  qty: number;
+}
+
+export interface LoyaltyPoints {
+  id: string;
+  salon_id: string;
+  client_phone: string;
+  client_name: string | null;
+  points: number;
+  updated_at: string;
+}
+
+export interface LoyaltyTransaction {
+  id: string;
+  salon_id: string;
+  client_phone: string;
+  points: number;
+  reason: string;
+  booking_id: string | null;
+  created_at: string;
+}
+
+export interface StaffUnavailability {
+  id: string;
+  staff_id: string;
+  unavailable_date: string;
+  start_time: string;
+  end_time: string;
+  reason: string | null;
+  created_at: string;
+}
+
+export interface ClientNote {
+  id: string;
+  salon_id: string;
+  client_phone: string;
+  client_name: string | null;
+  note: string;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface Sale {
+  id: string;
+  salon_id: string;
+  staff_id: string | null;
+  booking_id: string | null;
+  client_name: string | null;
+  tip: number;
+  payment_method: "cb" | "especes" | "autre";
+  total: number;
+  created_at: string;
+}
+
+export interface SaleItem {
+  id: string;
+  sale_id: string;
+  product_id: string | null;
+  service_id: string | null;
+  label: string;
+  qty: number;
+  unit_price: number;
 }
 
 export interface Subscription {

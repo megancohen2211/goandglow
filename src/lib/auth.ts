@@ -33,3 +33,24 @@ export async function requireRole(roles: AccountRole[]): Promise<Account> {
   if (!roles.includes(account.role)) redirect("/pro");
   return account;
 }
+
+/**
+ * Redirige si le compte connecté n'est ni propriétaire de la fiche salon
+ * `salonId` ni membre du staff (admin/owner). À utiliser dans les Server
+ * Actions de l'espace pro avant toute écriture liée à un salon précis.
+ */
+export async function requireSalonAccess(salonId: string): Promise<Account> {
+  const account = await requireAccount();
+  if (account.role === "admin" || account.role === "owner") return account;
+
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("salons")
+    .select("id")
+    .eq("id", salonId)
+    .eq("owner_account_id", account.id)
+    .maybeSingle();
+
+  if (!data) redirect("/pro/tableau-de-bord");
+  return account;
+}

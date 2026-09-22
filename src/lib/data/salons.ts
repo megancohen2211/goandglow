@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Salon, Service, Staff } from "@/lib/types";
+import type { Review, Salon, Service, Staff } from "@/lib/types";
 
 export interface SalonSearchParams {
   citySlug?: string;
@@ -81,6 +81,23 @@ export async function getSalonStaff(salonId: string) {
 
   if (error) throw error;
   return (data ?? []) as Staff[];
+}
+
+export async function getSalonReviews(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("salon_id", salonId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Review[];
+}
+
+export function averageRating(reviews: Review[]) {
+  if (reviews.length === 0) return null;
+  return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 }
 
 export async function listCitiesWithApprovedSalons() {
