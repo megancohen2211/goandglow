@@ -59,6 +59,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         >
           Clients
         </Link>
+        <Link
+          href="/pro/tableau-de-bord/caisse"
+          className="block rounded-lg px-3 py-2 hover:bg-black/5"
+        >
+          Caisse
+        </Link>
         {(account.role === "admin" || account.role === "owner") && (
           <Link href="/pro/admin" className="block rounded-lg px-3 py-2 hover:bg-black/5">
             Espace admin

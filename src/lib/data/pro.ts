@@ -5,6 +5,9 @@ import type {
   ChatMessage,
   ClientNote,
   Giftcard,
+  Product,
+  Sale,
+  SaleItem,
   Salon,
   StaffUnavailability,
   Subscription,
@@ -147,6 +150,55 @@ export async function getClientNotes(salonId: string, clientPhone: string) {
 
   if (error) throw error;
   return (data ?? []) as ClientNote[];
+}
+
+export async function getProducts(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("salon_id", salonId)
+    .order("name");
+
+  if (error) throw error;
+  return (data ?? []) as Product[];
+}
+
+export async function getUncashedBookings(salonId: string) {
+  const supabase = createClient();
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("salon_id", salonId)
+    .lte("booking_date", today)
+    .eq("status", "ok")
+    .order("booking_date", { ascending: false })
+    .limit(50);
+
+  if (error) throw error;
+
+  const { data: sales } = await supabase
+    .from("sales")
+    .select("booking_id")
+    .eq("salon_id", salonId)
+    .not("booking_id", "is", null);
+
+  const cashedIds = new Set((sales ?? []).map((s) => s.booking_id));
+  return ((bookings ?? []) as Booking[]).filter((b) => !cashedIds.has(b.id));
+}
+
+export async function getRecentSales(salonId: string, limit = 30) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("sales")
+    .select("*, sale_items(*)")
+    .eq("salon_id", salonId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data ?? []) as (Sale & { sale_items: SaleItem[] })[];
 }
 
 export async function getUpcomingUnavailability(salonId: string) {
