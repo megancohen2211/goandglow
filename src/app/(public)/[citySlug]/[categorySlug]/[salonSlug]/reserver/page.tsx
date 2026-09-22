@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSalonBySlug, getSalonServices, getSalonStaff } from "@/lib/data/salons";
 import { createBooking } from "@/lib/actions/bookings";
 import { joinWaitlist } from "@/lib/actions/waitlist";
+import { getCurrentAccount } from "@/lib/auth";
 
 interface ReserverPageProps {
   params: { citySlug: string; categorySlug: string; salonSlug: string };
@@ -12,9 +14,10 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
   const salon = await getSalonBySlug(params.citySlug, params.categorySlug, params.salonSlug);
   if (!salon) notFound();
 
-  const [services, staff] = await Promise.all([
+  const [services, staff, account] = await Promise.all([
     getSalonServices(salon.id),
     getSalonStaff(salon.id),
+    getCurrentAccount(),
   ]);
 
   const today = new Date().toISOString().slice(0, 10);
@@ -22,6 +25,24 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
   return (
     <div className="mx-auto max-w-xl px-4 py-10">
       <h1 className="text-2xl font-semibold">Réserver chez {salon.name}</h1>
+
+      {account ? (
+        <p className="mt-2 text-sm text-ink/60">
+          Connecté en tant que {account.full_name || account.email} — cette réservation
+          sera ajoutée à{" "}
+          <Link href="/compte/tableau-de-bord" className="underline">
+            votre historique
+          </Link>
+          .
+        </p>
+      ) : (
+        <p className="mt-2 text-sm text-ink/60">
+          <Link href={`/compte/connexion?suite=${encodeURIComponent(`/${params.citySlug}/${params.categorySlug}/${params.salonSlug}/reserver`)}`} className="underline">
+            Connectez-vous
+          </Link>{" "}
+          pour retrouver cette réservation dans votre historique (facultatif).
+        </p>
+      )}
 
       {searchParams.erreur && (
         <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -107,6 +128,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                 type="text"
                 name={`name_${i}`}
                 required={i === 0}
+                defaultValue={i === 0 ? account?.full_name ?? "" : ""}
                 className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
               />
             </div>
@@ -116,6 +138,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
                 type="tel"
                 name={`phone_${i}`}
                 required={i === 0}
+                defaultValue={i === 0 ? account?.phone ?? "" : ""}
                 className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
               />
             </div>

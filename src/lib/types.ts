@@ -11,6 +11,8 @@ export interface Account {
   email: string;
   role: AccountRole;
   auth_user_id: string | null;
+  full_name: string | null;
+  phone: string | null;
   created_at: string;
 }
 

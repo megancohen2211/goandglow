@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { getCurrentAccount } from "@/lib/auth";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const account = await getCurrentAccount();
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-black/5 bg-white">
@@ -8,8 +11,11 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <Link href="/" className="text-xl font-semibold text-brand-dark">
             Go & Glow
           </Link>
-          <nav className="flex gap-4 text-sm text-ink/70">
+          <nav className="flex items-center gap-4 text-sm text-ink/70">
             <Link href="/">Rechercher</Link>
+            <Link href="/compte" className="font-medium text-brand-dark">
+              {account ? "Mon compte" : "Se connecter"}
+            </Link>
           </nav>
         </div>
       </header>

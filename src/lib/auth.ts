@@ -27,6 +27,13 @@ export async function requireAccount(): Promise<Account> {
   return account;
 }
 
+/** Équivalent pour l'espace particulier (redirige vers /compte/connexion). */
+export async function requireClientAccount(): Promise<Account> {
+  const account = await getCurrentAccount();
+  if (!account) redirect("/compte/connexion");
+  return account;
+}
+
 /** Redirige si le compte connecté n'a pas l'un des rôles autorisés. */
 export async function requireRole(roles: AccountRole[]): Promise<Account> {
   const account = await requireAccount();

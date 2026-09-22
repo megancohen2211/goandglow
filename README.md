@@ -34,7 +34,11 @@ viendra dans un second temps.
       clients, réglages salon, messagerie par téléphone, jeton calendrier.
    5. `supabase/policies_v2.sql` — politiques RLS des tables de
       `schema_v2.sql`.
-   6. `supabase/seed.sql` (optionnel, développement uniquement) — salons de
+   6. `supabase/schema_v3.sql` — colonnes `full_name`/`phone` sur `accounts`
+      pour l'espace de connexion particulier.
+   7. `supabase/policies_v3.sql` — politique RLS d'annulation d'une
+      réservation par son propriétaire.
+   8. `supabase/seed.sql` (optionnel, développement uniquement) — salons de
       démonstration à Marseille.
 3. Copier `.env.example` vers `.env.local` et renseigner :
    - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Project
@@ -64,8 +68,11 @@ supabase/                     schéma SQL, politiques RLS, données de démo
 
 ## Rôles et circuits de validation
 
-- **Client** : pas de compte formel dans ce MVP (nom + téléphone à la
-  réservation).
+- **Client** : compte optionnel (`/compte/connexion`), même mécanisme que
+  l'espace pro (e-mail + code à usage unique), mais auto-créé à la
+  première connexion — aucune fiche à créer au préalable. Réserver sans
+  être connecté reste possible (nom + téléphone à la réservation), comme
+  avant.
 - **Pro** : connexion par e-mail + code. Deux façons de créer une fiche :
   1. **Auto-inscription** (`/pro/inscription`) : la fiche part au statut
      `pending`, à valider par un admin avant publication.
@@ -79,6 +86,20 @@ supabase/                     schéma SQL, politiques RLS, données de démo
   administrateurs (`/pro/admin/administrateurs`). Un déclencheur SQL
   (`guard_last_owner_trigger`) empêche de supprimer ou rétrograder le
   dernier compte `owner`.
+
+## Espace particulier (`/compte`)
+
+- Connexion par e-mail + code (compte créé automatiquement à la première
+  connexion, `/compte/connexion`).
+- **Réservations** : historique à venir/passé des réservations faites en
+  étant connecté, annulation d'une réservation à venir.
+- **Profil** : nom et téléphone ; renseigner le téléphone déjà utilisé
+  lors de réservations précédentes (faites sans compte) les rattache
+  rétroactivement à l'historique.
+- **Fidélité** : points cumulés, tous salons confondus, une fois le
+  téléphone renseigné dans le profil.
+- La réservation reste possible sans connexion (nom + téléphone à
+  chaque fois) ; se connecter est proposé mais facultatif.
 
 ## Fonctionnalités du site particuliers
 

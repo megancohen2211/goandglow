@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { addMinutes, timeToMinutes, weekdayOf } from "@/lib/time";
 import { awardLoyaltyPoints } from "@/lib/loyalty";
+import { getCurrentAccount } from "@/lib/auth";
 import type { Booking, OpeningHours, Service, Staff } from "@/lib/types";
 
 function basePath(citySlug: string, categorySlug: string, salonSlug: string) {
@@ -178,6 +179,7 @@ export async function createBooking(formData: FormData) {
     staff_id: staffId,
     client_name: name,
     client_phone: phones[i],
+    client_account_id: null as string | null,
     booking_date: date,
     booking_time: addMinutes(time, i * service!.duration_min),
     duration_min: service!.duration_min,
@@ -185,6 +187,12 @@ export async function createBooking(formData: FormData) {
     status: "ok" as const,
     source: "goandglow",
   }));
+
+  // La personne n°1 est la personne connectée (le cas échéant) : ses
+  // réservations pour les autres personnes du groupe restent en son nom
+  // uniquement, sans compte associé.
+  const account = await getCurrentAccount();
+  if (account) rows[0].client_account_id = account.id;
 
   if (giftcard) {
     const discount = Math.min(giftcard.balance, rows[0].price);
