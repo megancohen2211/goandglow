@@ -33,9 +33,24 @@ async function staffIsFree(
   const startMin = timeToMinutes(start);
   const endMin = timeToMinutes(end);
 
-  return !(data as Pick<Booking, "booking_time" | "duration_min">[]).some((b) => {
+  const bookingConflict = (data as Pick<Booking, "booking_time" | "duration_min">[]).some((b) => {
     const bStart = timeToMinutes(b.booking_time);
     const bEnd = bStart + b.duration_min;
+    return startMin < bEnd && bStart < endMin;
+  });
+  if (bookingConflict) return false;
+
+  const { data: blocks, error: blocksError } = await admin
+    .from("staff_unavailability")
+    .select("start_time, end_time")
+    .eq("staff_id", staffId)
+    .eq("unavailable_date", date);
+
+  if (blocksError) throw blocksError;
+
+  return !(blocks as { start_time: string; end_time: string }[]).some((b) => {
+    const bStart = timeToMinutes(b.start_time);
+    const bEnd = timeToMinutes(b.end_time);
     return startMin < bEnd && bStart < endMin;
   });
 }

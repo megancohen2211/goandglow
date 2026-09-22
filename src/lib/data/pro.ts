@@ -1,5 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Booking, Chat, ChatMessage, Giftcard, Salon, Subscription, Waitlist } from "@/lib/types";
+import type {
+  Booking,
+  Chat,
+  ChatMessage,
+  Giftcard,
+  Salon,
+  StaffUnavailability,
+  Subscription,
+  Waitlist,
+} from "@/lib/types";
 
 /** Fiches possédées par le compte connecté (RLS : owner_account_id = soi-même). */
 export async function getMySalons(accountId: string) {
@@ -70,6 +79,20 @@ export async function getChatMessages(chatId: string) {
 
   if (error) throw error;
   return (data ?? []) as ChatMessage[];
+}
+
+export async function getUpcomingUnavailability(salonId: string) {
+  const supabase = createClient();
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("staff_unavailability")
+    .select("*, staff!inner(salon_id, name)")
+    .eq("staff.salon_id", salonId)
+    .gte("unavailable_date", today)
+    .order("unavailable_date");
+
+  if (error) throw error;
+  return (data ?? []) as (StaffUnavailability & { staff: { name: string } })[];
 }
 
 export async function getUpcomingBookings(salonId: string) {

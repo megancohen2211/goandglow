@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { requireAccount } from "@/lib/auth";
-import { getMySalons, getUpcomingBookings } from "@/lib/data/pro";
+import { getMySalons, getUpcomingBookings, getUpcomingUnavailability } from "@/lib/data/pro";
+import { getSalonStaff } from "@/lib/data/salons";
+import { addUnavailability, removeUnavailability } from "@/lib/actions/unavailability";
 import { SalonSwitcher } from "@/components/SalonSwitcher";
 
 interface AgendaPageProps {
@@ -24,7 +26,11 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
   const salon = approved.find((s) => s.id === salonId);
   if (!salon) redirect(`/pro/tableau-de-bord/agenda?salon=${approved[0].id}`);
 
-  const bookings = await getUpcomingBookings(salon!.id);
+  const [bookings, staff, unavailability] = await Promise.all([
+    getUpcomingBookings(salon!.id),
+    getSalonStaff(salon!.id),
+    getUpcomingUnavailability(salon!.id),
+  ]);
   const byDate = bookings.reduce<Record<string, typeof bookings>>((acc, b) => {
     (acc[b.booking_date] ??= []).push(b);
     return acc;
@@ -68,6 +74,73 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
           </p>
         )}
       </div>
+
+      <section className="mt-10 border-t border-black/5 pt-8">
+        <h2 className="text-lg font-medium">Indisponibilités</h2>
+        <p className="mt-1 text-sm text-ink/60">
+          Bloquez un créneau pour un membre d&apos;équipe (congé, formation, pause...), en plus
+          des jours travaillés et des fermetures exceptionnelles.
+        </p>
+
+        <ul className="mt-4 divide-y divide-black/5 rounded-xl border border-black/10 bg-white">
+          {unavailability.map((block) => (
+            <li key={block.id} className="flex items-center justify-between px-4 py-3 text-sm">
+              <span>
+                {block.staff.name} — {new Date(`${block.unavailable_date}T00:00:00`).toLocaleDateString("fr-FR")}
+                {" "}{block.start_time.slice(0, 5)}–{block.end_time.slice(0, 5)}
+                {block.reason ? ` (${block.reason})` : ""}
+              </span>
+              <form action={removeUnavailability}>
+                <input type="hidden" name="salonId" value={salon!.id} />
+                <input type="hidden" name="id" value={block.id} />
+                <button className="text-ink/50 hover:underline">Retirer</button>
+              </form>
+            </li>
+          ))}
+          {unavailability.length === 0 && (
+            <li className="px-4 py-3 text-sm text-ink/50">Aucune indisponibilité à venir.</li>
+          )}
+        </ul>
+
+        {staff.length > 0 ? (
+          <form action={addUnavailability} className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-black/10 bg-white p-4">
+            <input type="hidden" name="salonId" value={salon!.id} />
+            <div>
+              <label className="block text-xs font-medium">Membre</label>
+              <select name="staffId" required className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm">
+                {staff.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium">Date</label>
+              <input type="date" name="date" required className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium">De</label>
+              <input type="time" name="startTime" required className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium">À</label>
+              <input type="time" name="endTime" required className="mt-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-medium">Motif (optionnel)</label>
+              <input type="text" name="reason" className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+            </div>
+            <button className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark">
+              Bloquer
+            </button>
+          </form>
+        ) : (
+          <p className="mt-4 text-sm text-ink/50">
+            Ajoutez d&apos;abord un membre d&apos;équipe depuis la page Équipe &amp; horaires.
+          </p>
+        )}
+      </section>
     </div>
   );
 }
