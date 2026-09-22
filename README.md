@@ -17,7 +17,10 @@ viendra dans un second temps.
 - **Supabase** (Postgres + Auth) : connexion par e-mail + code à usage
   unique (pas de mot de passe), sécurité par ligne (RLS) pour séparer les
   données par rôle et par salon.
-- **Tailwind CSS** pour le style.
+- **Tailwind CSS** pour le style, avec une palette violet/corail (variables
+  CSS dans `src/app/globals.css`, support du mode sombre via
+  `prefers-color-scheme`) et les polices Google Fonts Bricolage Grotesque
+  (titres) + Figtree (texte), chargées via `next/font`.
 - E-mails transactionnels : simulés (journalisés dans la console) tant que
   `RESEND_API_KEY` n'est pas configurée — voir `src/lib/email.ts`.
 
@@ -34,7 +37,10 @@ viendra dans un second temps.
       clients, réglages salon, messagerie par téléphone, jeton calendrier.
    5. `supabase/policies_v2.sql` — politiques RLS des tables de
       `schema_v2.sql`.
-   6. `supabase/seed.sql` (optionnel, développement uniquement) — salons de
+   6. `supabase/schema_v3.sql` — bons plans heures creuses, échange de
+      points de fidélité contre une réduction, photo d'inspiration à la
+      réservation (+ bucket Storage `inspiration-photos`).
+   7. `supabase/seed.sql` (optionnel, développement uniquement) — salons de
       démonstration à Marseille.
 3. Copier `.env.example` vers `.env.local` et renseigner :
    - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Project
@@ -82,25 +88,32 @@ supabase/                     schéma SQL, politiques RLS, données de démo
 
 ## Fonctionnalités du site particuliers
 
-- Recherche de salons par ville/catégorie/nom, fiche salon avec prestations
-  et équipe.
-- Réservation en ligne (créneau, professionnel, plusieurs personnes),
-  application d'un code cadeau en réduction, liste d'attente si aucun
-  créneau ne convient.
+- Recherche de salons par ville/catégorie/nom, avec **tri** (prix, note,
+  prochain créneau) et **filtre prix** ("moins de 140 €" dans l'assistant
+  de recherche en langage libre), fiche salon avec prestations et équipe.
+- Réservation en ligne (créneau, professionnel, plusieurs personnes,
+  **photo d'inspiration** optionnelle), application d'un code cadeau ou de
+  points de fidélité en réduction, **réduction automatique en heures
+  creuses** si activée par le salon, liste d'attente si aucun créneau ne
+  convient.
+- **Favoris** : bouton cœur sur les fiches salon, enregistrés sur
+  l'appareil (pas de compte client dans ce MVP), page `/favoris`.
 - Avis clients avec photos avant/après et réponse du salon.
 - Messagerie salon ↔ client, sans compte : une conversation est identifiée
   par un lien à usage personnel (`/[ville]/[categorie]/[salon]/messages/[id]`),
   à conserver pour continuer d'échanger — même logique que le lien
   d'invitation salon.
 - Programme de fidélité par points (si activé par le salon), consultable
-  par numéro de téléphone.
+  par numéro de téléphone, échangeables contre une réduction à la
+  réservation une fois le seuil atteint.
 - Vérification de solde de carte cadeau (`/cartes-cadeaux`).
 
 ## Espace pro (`/pro/tableau-de-bord`)
 
-- **Agenda** : rendez-vous à venir, blocage de créneaux par membre
-  d'équipe (indisponibilités ponctuelles, en plus des fermetures
-  exceptionnelles du salon).
+- **Agenda** : vue calendrier semaine par membre d'équipe (créneaux
+  positionnés dans le temps, indisponibilités visibles en grisé), blocage
+  de créneaux ponctuels (congé, formation...), photos d'inspiration
+  jointes aux réservations à venir.
 - **Avis** : réponse aux avis clients.
 - **Liste d'attente** : suivi des demandes, marquage "prévenu".
 - **Cartes cadeaux** : émission et suivi des soldes.
@@ -110,8 +123,9 @@ supabase/                     schéma SQL, politiques RLS, données de démo
 - **Équipe & horaires** : membres d'équipe, horaires d'ouverture par jour,
   fermetures exceptionnelles.
 - **Réglages** : pourcentage d'acompte, délai d'annulation, délai de
-  rappel, points de fidélité par réservation, lien d'abonnement calendrier
-  (.ics).
+  rappel, points de fidélité par réservation et seuil/valeur d'échange,
+  bons plans heures creuses (jours/plage horaire/pourcentage), lien
+  d'abonnement calendrier (.ics).
 - **Clients** : fiches dérivées de l'historique de réservation (nombre de
   visites, total dépensé) avec notes libres du salon.
 - **Caisse** : encaissement d'un rendez-vous (avec pourboire et moyen de

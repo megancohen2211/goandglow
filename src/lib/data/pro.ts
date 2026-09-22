@@ -290,6 +290,35 @@ export async function getUpcomingUnavailability(salonId: string) {
   return (data ?? []) as (StaffUnavailability & { staff: { name: string } })[];
 }
 
+export async function getWeekBookings(salonId: string, startIso: string, endIso: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("salon_id", salonId)
+    .gte("booking_date", startIso)
+    .lte("booking_date", endIso)
+    .neq("status", "cancelled")
+    .order("booking_date")
+    .order("booking_time");
+
+  if (error) throw error;
+  return (data ?? []) as Booking[];
+}
+
+export async function getWeekUnavailability(salonId: string, startIso: string, endIso: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("staff_unavailability")
+    .select("*, staff!inner(salon_id, name)")
+    .eq("staff.salon_id", salonId)
+    .gte("unavailable_date", startIso)
+    .lte("unavailable_date", endIso);
+
+  if (error) throw error;
+  return (data ?? []) as (StaffUnavailability & { staff: { name: string } })[];
+}
+
 export async function getUpcomingBookings(salonId: string) {
   const supabase = createClient();
   const today = new Date().toISOString().slice(0, 10);

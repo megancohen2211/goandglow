@@ -1,12 +1,34 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAccount } from "@/lib/auth";
-import { getMySalons, getUpcomingBookings, getUpcomingUnavailability } from "@/lib/data/pro";
+import {
+  getMySalons,
+  getUpcomingBookings,
+  getUpcomingUnavailability,
+  getWeekBookings,
+  getWeekUnavailability,
+} from "@/lib/data/pro";
 import { getSalonStaff } from "@/lib/data/salons";
 import { addUnavailability, removeUnavailability } from "@/lib/actions/unavailability";
 import { SalonSwitcher } from "@/components/SalonSwitcher";
+import { WeekCalendar } from "@/components/WeekCalendar";
 
 interface AgendaPageProps {
-  searchParams: { salon?: string };
+  searchParams: { salon?: string; semaine?: string; membre?: string };
+}
+
+function mondayOf(dateIso: string) {
+  const d = new Date(`${dateIso}T00:00:00`);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function addDaysIso(startIso: string, offset: number) {
+  const d = new Date(`${startIso}T00:00:00`);
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
 }
 
 export default async function AgendaPage({ searchParams }: AgendaPageProps) {
@@ -26,15 +48,26 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
   const salon = approved.find((s) => s.id === salonId);
   if (!salon) redirect(`/pro/tableau-de-bord/agenda?salon=${approved[0].id}`);
 
-  const [bookings, staff, unavailability] = await Promise.all([
+  const weekStart = mondayOf(searchParams.semaine ?? new Date().toISOString().slice(0, 10));
+  const weekEnd = addDaysIso(weekStart, 6);
+  const selectedStaffId = searchParams.membre ?? "";
+
+  const [bookings, staff, unavailability, weekBookings, weekUnavailability] = await Promise.all([
     getUpcomingBookings(salon!.id),
     getSalonStaff(salon!.id),
     getUpcomingUnavailability(salon!.id),
+    getWeekBookings(salon!.id, weekStart, weekEnd),
+    getWeekUnavailability(salon!.id, weekStart, weekEnd),
   ]);
-  const byDate = bookings.reduce<Record<string, typeof bookings>>((acc, b) => {
-    (acc[b.booking_date] ??= []).push(b);
-    return acc;
-  }, {});
+  const upcomingWithPhoto = bookings.filter((b) => b.inspiration_photo);
+
+  const weekHref = (params: { semaine?: string; membre?: string }) => {
+    const qs = new URLSearchParams();
+    qs.set("salon", salon!.id);
+    qs.set("semaine", params.semaine ?? weekStart);
+    if (params.membre ?? selectedStaffId) qs.set("membre", params.membre ?? selectedStaffId);
+    return `/pro/tableau-de-bord/agenda?${qs.toString()}`;
+  };
 
   return (
     <div>
@@ -45,45 +78,73 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
         )}
       </div>
 
-      <div className="mt-6 space-y-6">
-        {Object.entries(byDate).map(([date, dayBookings]) => (
-          <div key={date}>
-            <h2 className="text-sm font-semibold text-ink/50">
-              {new Date(`${date}T00:00:00`).toLocaleDateString("fr-FR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
-            </h2>
-            <ul className="mt-2 divide-y divide-line rounded-2xl border border-line bg-surface">
-              {dayBookings.map((b) => (
-                <li key={b.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-                  <span className="flex items-center gap-2">
-                    {b.booking_time.slice(0, 5)} — {b.client_name}
-                    {b.inspiration_photo && (
-                      <a href={b.inspiration_photo} target="_blank" rel="noreferrer">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={b.inspiration_photo}
-                          alt="Photo d'inspiration"
-                          className="h-8 w-8 rounded-lg object-cover"
-                        />
-                      </a>
-                    )}
-                  </span>
-                  <span className="text-ink/50">{b.duration_min} min · {b.price} €</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Link
+            href={weekHref({ semaine: addDaysIso(weekStart, -7) })}
+            className="rounded-full border border-line px-3 py-1.5 text-sm hover:bg-line/40"
+          >
+            ← Semaine précédente
+          </Link>
+          <Link
+            href={weekHref({ semaine: addDaysIso(weekStart, 7) })}
+            className="rounded-full border border-line px-3 py-1.5 text-sm hover:bg-line/40"
+          >
+            Semaine suivante →
+          </Link>
+        </div>
 
-        {bookings.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-line p-6 text-ink/50">
-            Aucun rendez-vous à venir.
-          </p>
+        {staff.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            <Link
+              href={weekHref({ membre: "" })}
+              className={`rounded-full px-3 py-1 text-sm ${
+                !selectedStaffId ? "bg-brand text-white" : "border border-line hover:bg-line/40"
+              }`}
+            >
+              Tous
+            </Link>
+            {staff.map((member) => (
+              <Link
+                key={member.id}
+                href={weekHref({ membre: member.id })}
+                className={`rounded-full px-3 py-1 text-sm ${
+                  selectedStaffId === member.id
+                    ? "bg-brand text-white"
+                    : "border border-line hover:bg-line/40"
+                }`}
+              >
+                {member.name}
+              </Link>
+            ))}
+          </div>
         )}
       </div>
+
+      <div className="mt-4">
+        <WeekCalendar
+          weekStart={weekStart}
+          staff={staff}
+          selectedStaffId={selectedStaffId}
+          bookings={weekBookings}
+          unavailability={weekUnavailability}
+        />
+      </div>
+
+      {upcomingWithPhoto.length > 0 && (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {upcomingWithPhoto.map((b) => (
+            <a key={b.id} href={b.inspiration_photo!} target="_blank" rel="noreferrer" title={b.client_name}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={b.inspiration_photo!}
+                alt={`Inspiration — ${b.client_name}`}
+                className="h-12 w-12 rounded-lg object-cover"
+              />
+            </a>
+          ))}
+        </div>
+      )}
 
       <section className="mt-10 border-t border-black/5 pt-8">
         <h2 className="text-lg font-medium">Indisponibilités</h2>
