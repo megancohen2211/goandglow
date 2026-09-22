@@ -67,6 +67,7 @@ export async function createBooking(formData: FormData) {
   const date = String(formData.get("date") ?? "");
   const time = String(formData.get("time") ?? "");
   const giftcardCode = String(formData.get("giftcardCode") ?? "").trim().toUpperCase() || null;
+  const usePoints = formData.get("usePoints") === "on";
   const peopleCount = Math.min(Math.max(Number(formData.get("peopleCount") ?? 1), 1), 4);
 
   if (!salonId || !serviceId || !date || !time) {
@@ -190,6 +191,32 @@ export async function createBooking(formData: FormData) {
       source: "goandglow",
     };
   });
+
+  const rewardThreshold = Number(salon.loyalty_reward_threshold ?? 100);
+  const rewardValue = Number(salon.loyalty_reward_value ?? 0);
+  if (usePoints && rewardValue > 0) {
+    const { data: loyalty } = await admin
+      .from("loyalty_points")
+      .select("points")
+      .eq("salon_id", salonId)
+      .eq("client_phone", phones[0])
+      .maybeSingle();
+    if (loyalty && loyalty.points >= rewardThreshold) {
+      const discount = Math.min(rewardValue, rows[0].price);
+      rows[0].price = Number((rows[0].price - discount).toFixed(2));
+      await admin
+        .from("loyalty_points")
+        .update({ points: loyalty.points - rewardThreshold, updated_at: new Date().toISOString() })
+        .eq("salon_id", salonId)
+        .eq("client_phone", phones[0]);
+      await admin.from("loyalty_transactions").insert({
+        salon_id: salonId,
+        client_phone: phones[0],
+        points: -rewardThreshold,
+        reason: "récompense échangée",
+      });
+    }
+  }
 
   let giftcardDiscount = 0;
   if (giftcard) {

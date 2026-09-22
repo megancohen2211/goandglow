@@ -132,6 +132,14 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
           />
         </div>
 
+        {salon.loyalty_reward_value > 0 && (
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="usePoints" />
+            Utiliser mes {salon.loyalty_reward_threshold} points de fidélité (−
+            {salon.loyalty_reward_value} €, même numéro de téléphone que la personne 1)
+          </label>
+        )}
+
         <button
           type="submit"
           className="w-full rounded-full bg-brand px-5 py-3 font-medium text-white hover:bg-brand-dark"
