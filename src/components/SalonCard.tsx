@@ -41,6 +41,11 @@ export function SalonCard({ salon }: { salon: Salon }) {
         )}
 
         <div className="mt-1 flex flex-wrap gap-1 text-xs">
+          {salon.offpeak_enabled && (
+            <span className="rounded-full bg-accent-soft px-2 py-0.5 font-medium text-accent-ink">
+              Bons plans heures creuses
+            </span>
+          )}
           {salon.home_service && (
             <span className="rounded-full bg-brand-light px-2 py-0.5 font-medium text-brand-dark">
               À domicile

@@ -77,6 +77,11 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
       {salon.description && <p className="mt-4 text-ink/80">{salon.description}</p>}
 
       <div className="mt-2 flex flex-wrap gap-1 text-xs">
+        {salon.offpeak_enabled && (
+          <span className="rounded-full bg-accent-soft px-2 py-0.5 font-medium text-accent-ink">
+            -{salon.offpeak_percent}% en heures creuses
+          </span>
+        )}
         {salon.home_service && (
           <span className="rounded-full bg-black/5 px-2 py-0.5">
             À domicile{salon.home_fee ? ` (+${salon.home_fee} €)` : ""}
@@ -86,6 +91,16 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
           <span className="rounded-full bg-black/5 px-2 py-0.5">Acompte à la réservation</span>
         )}
       </div>
+
+      {salon.offpeak_enabled && (
+        <p className="mt-2 text-xs text-ink/50">
+          Bons plans : -{salon.offpeak_percent}% le{" "}
+          {salon.offpeak_days
+            .map((d: number) => ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"][d])
+            .join(", ")}{" "}
+          de {salon.offpeak_start.slice(0, 5)} à {salon.offpeak_end.slice(0, 5)}.
+        </p>
+      )}
 
       <section className="mt-8">
         <h2 className="text-lg font-medium">Prestations</h2>

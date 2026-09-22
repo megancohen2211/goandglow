@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { addMinutes, timeToMinutes, weekdayOf } from "@/lib/time";
+import { addMinutes, timeToMinutes, weekdayOf, offpeakDiscountPercent } from "@/lib/time";
 import { awardLoyaltyPoints } from "@/lib/loyalty";
 import type { Booking, OpeningHours, Service, Staff } from "@/lib/types";
 
@@ -172,23 +172,29 @@ export async function createBooking(formData: FormData) {
     giftcard = foundGiftcard;
   }
 
-  const rows = names.map((name, i) => ({
-    salon_id: salonId,
-    service_id: serviceId,
-    staff_id: staffId,
-    client_name: name,
-    client_phone: phones[i],
-    booking_date: date,
-    booking_time: addMinutes(time, i * service!.duration_min),
-    duration_min: service!.duration_min,
-    price: service!.price,
-    status: "ok" as const,
-    source: "goandglow",
-  }));
+  const rows = names.map((name, i) => {
+    const bookingTime = addMinutes(time, i * service!.duration_min);
+    const discountPct = offpeakDiscountPercent(salon, date, bookingTime);
+    const price = Number((service!.price * (100 - discountPct) / 100).toFixed(2));
+    return {
+      salon_id: salonId,
+      service_id: serviceId,
+      staff_id: staffId,
+      client_name: name,
+      client_phone: phones[i],
+      booking_date: date,
+      booking_time: bookingTime,
+      duration_min: service!.duration_min,
+      price,
+      status: "ok" as const,
+      source: "goandglow",
+    };
+  });
 
+  let giftcardDiscount = 0;
   if (giftcard) {
-    const discount = Math.min(giftcard.balance, rows[0].price);
-    rows[0].price = Number((rows[0].price - discount).toFixed(2));
+    giftcardDiscount = Math.min(giftcard.balance, rows[0].price);
+    rows[0].price = Number((rows[0].price - giftcardDiscount).toFixed(2));
   }
 
   const { data: created, error: insertError } = await admin
@@ -198,16 +204,15 @@ export async function createBooking(formData: FormData) {
 
   if (insertError || !created) withError(base, "Impossible d'enregistrer la réservation, réessayez.");
 
-  if (giftcard) {
-    const discount = Math.min(giftcard.balance, service!.price);
+  if (giftcard && giftcardDiscount > 0) {
     await admin
       .from("giftcards")
-      .update({ balance: Number((giftcard.balance - discount).toFixed(2)) })
+      .update({ balance: Number((giftcard.balance - giftcardDiscount).toFixed(2)) })
       .eq("id", giftcard.id);
     await admin.from("giftcard_redemptions").insert({
       giftcard_id: giftcard.id,
       booking_id: created![0].id,
-      amount: discount,
+      amount: giftcardDiscount,
     });
   }
 

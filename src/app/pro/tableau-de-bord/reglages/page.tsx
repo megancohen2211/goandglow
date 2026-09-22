@@ -90,6 +90,86 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
           <p className="mt-1 text-xs text-ink/50">0 = programme de fidélité désactivé.</p>
         </div>
 
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium">Seuil pour une récompense (points)</label>
+            <input
+              type="number"
+              name="loyaltyRewardThreshold"
+              min={1}
+              defaultValue={salon!.loyalty_reward_threshold}
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Valeur de la récompense (€)</label>
+            <input
+              type="number"
+              name="loyaltyRewardValue"
+              min={0}
+              step="0.01"
+              defaultValue={salon!.loyalty_reward_value}
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
+            />
+          </div>
+        </div>
+        <p className="-mt-3 text-xs text-ink/50">
+          Ex. 100 points = 10 € de réduction. Le client pourra les échanger à la réservation.
+        </p>
+
+        <div className="border-t border-line pt-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" name="offpeakEnabled" defaultChecked={salon!.offpeak_enabled} />
+            Activer les bons plans heures creuses
+          </label>
+
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium">Réduction (%)</label>
+              <input
+                type="number"
+                name="offpeakPercent"
+                min={0}
+                max={100}
+                defaultValue={salon!.offpeak_percent}
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium">De</label>
+              <input
+                type="time"
+                name="offpeakStart"
+                defaultValue={salon!.offpeak_start?.slice(0, 5)}
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium">À</label>
+              <input
+                type="time"
+                name="offpeakEnd"
+                defaultValue={salon!.offpeak_end?.slice(0, 5)}
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-3 text-sm">
+            {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((label, i) => (
+              <label key={i} className="flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  name="offpeakDays"
+                  value={i}
+                  defaultChecked={salon!.offpeak_days?.includes(i)}
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        </div>
+
         <button className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
           Enregistrer
         </button>

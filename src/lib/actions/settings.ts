@@ -13,6 +13,16 @@ export async function updateSalonSettings(formData: FormData) {
   const cancellationHours = Math.max(0, Number(formData.get("cancellationHours") ?? 0));
   const reminderHours = Math.max(0, Number(formData.get("reminderHours") ?? 0));
   const loyaltyPointsPerBooking = Math.max(0, Number(formData.get("loyaltyPointsPerBooking") ?? 0));
+  const loyaltyRewardThreshold = Math.max(1, Number(formData.get("loyaltyRewardThreshold") ?? 100));
+  const loyaltyRewardValue = Math.max(0, Number(formData.get("loyaltyRewardValue") ?? 0));
+  const offpeakEnabled = formData.get("offpeakEnabled") === "on";
+  const offpeakPercent = Math.min(100, Math.max(0, Number(formData.get("offpeakPercent") ?? 0)));
+  const offpeakDays = formData
+    .getAll("offpeakDays")
+    .map((d) => Number(d))
+    .filter((d) => d >= 0 && d <= 6);
+  const offpeakStart = String(formData.get("offpeakStart") ?? "09:00");
+  const offpeakEnd = String(formData.get("offpeakEnd") ?? "12:00");
 
   const admin = createAdminClient();
   await admin
@@ -22,6 +32,13 @@ export async function updateSalonSettings(formData: FormData) {
       cancellation_hours: cancellationHours,
       reminder_hours: reminderHours,
       loyalty_points_per_booking: loyaltyPointsPerBooking,
+      loyalty_reward_threshold: loyaltyRewardThreshold,
+      loyalty_reward_value: loyaltyRewardValue,
+      offpeak_enabled: offpeakEnabled,
+      offpeak_percent: offpeakPercent,
+      offpeak_days: offpeakDays,
+      offpeak_start: offpeakStart,
+      offpeak_end: offpeakEnd,
     })
     .eq("id", salonId);
 

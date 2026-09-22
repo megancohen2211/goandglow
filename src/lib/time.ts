@@ -17,3 +17,20 @@ export function addMinutes(time: string, minutes: number): string {
 export function weekdayOf(dateIso: string): number {
   return new Date(`${dateIso}T00:00:00`).getDay();
 }
+
+interface OffpeakSettings {
+  offpeak_enabled: boolean;
+  offpeak_percent: number;
+  offpeak_days: number[];
+  offpeak_start: string;
+  offpeak_end: string;
+}
+
+/** Pourcentage de réduction "heures creuses" applicable à ce créneau, ou 0. */
+export function offpeakDiscountPercent(salon: OffpeakSettings, date: string, time: string): number {
+  if (!salon.offpeak_enabled) return 0;
+  if (!salon.offpeak_days.includes(weekdayOf(date))) return 0;
+  const m = timeToMinutes(time);
+  const inWindow = m >= timeToMinutes(salon.offpeak_start) && m < timeToMinutes(salon.offpeak_end);
+  return inWindow ? Number(salon.offpeak_percent) : 0;
+}

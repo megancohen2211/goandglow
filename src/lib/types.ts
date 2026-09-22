@@ -42,6 +42,13 @@ export interface Salon {
   reminder_hours: number;
   loyalty_points_per_booking: number;
   calendar_token: string;
+  offpeak_enabled: boolean;
+  offpeak_percent: number;
+  offpeak_days: number[];
+  offpeak_start: string;
+  offpeak_end: string;
+  loyalty_reward_threshold: number;
+  loyalty_reward_value: number;
   created_at: string;
 }
 
