@@ -5,8 +5,15 @@ import { SalonCard } from "@/components/SalonCard";
 
 const DEFAULT_CITY_SLUG = "marseille";
 
+type Sort = "prix" | "note" | "prochain-creneau";
+const SORT_LABELS: Record<Sort, string> = {
+  "prochain-creneau": "Prochain créneau",
+  prix: "Prix",
+  note: "Note",
+};
+
 interface HomeProps {
-  searchParams: { q?: string; ville?: string; categorie?: string };
+  searchParams: { q?: string; ville?: string; categorie?: string; tri?: string };
 }
 
 export default async function HomePage({ searchParams }: HomeProps) {
@@ -15,11 +22,16 @@ export default async function HomePage({ searchParams }: HomeProps) {
 
   const parsed = searchParams.q ? parseFreeTextQuery(searchParams.q) : undefined;
   const categorySlug = searchParams.categorie || parsed?.categorySlug;
+  const sort = (searchParams.tri as Sort | undefined) && searchParams.tri! in SORT_LABELS
+    ? (searchParams.tri as Sort)
+    : undefined;
 
-  const salons = await searchSalons({ citySlug, categorySlug });
-  const filtered = parsed?.maxPrice
-    ? salons // le prix par prestation est filtré sur la page catégorie ; ici on garde tout
-    : salons;
+  const filtered = await searchSalons({
+    citySlug,
+    categorySlug,
+    sort,
+    maxPrice: parsed?.maxPrice,
+  });
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
@@ -67,7 +79,36 @@ export default async function HomePage({ searchParams }: HomeProps) {
           <h2 className="text-xl font-medium">
             Salons à {cities.find((c) => c.slug === citySlug)?.label ?? "Marseille"}
           </h2>
-          <span className="text-sm text-ink/50">{filtered.length} résultat(s)</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-ink/50">{filtered.length} résultat(s)</span>
+            <form className="flex items-center gap-1 text-sm">
+              <input type="hidden" name="ville" value={citySlug} />
+              {categorySlug && <input type="hidden" name="categorie" value={categorySlug} />}
+              {searchParams.q && <input type="hidden" name="q" value={searchParams.q} />}
+              <label htmlFor="tri" className="text-ink/50">
+                Trier :
+              </label>
+              <select
+                id="tri"
+                name="tri"
+                defaultValue={sort ?? ""}
+                className="rounded-full border border-line bg-surface px-3 py-1"
+              >
+                <option value="">Pertinence</option>
+                {Object.entries(SORT_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="rounded-full border border-line bg-surface px-3 py-1 hover:bg-line/40"
+              >
+                OK
+              </button>
+            </form>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
