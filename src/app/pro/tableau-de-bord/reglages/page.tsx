@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAccount } from "@/lib/auth";
 import { getMySalons } from "@/lib/data/pro";
-import { updateSalonSettings } from "@/lib/actions/settings";
+import { updateSalonSettings, regenerateCalendarToken } from "@/lib/actions/settings";
 import { SalonSwitcher } from "@/components/SalonSwitcher";
 
 interface ReglagesPageProps {
@@ -100,6 +100,26 @@ export default async function ReglagesPage({ searchParams }: ReglagesPageProps) 
         nécessitent Stripe et un fournisseur d&apos;e-mails/SMS configurés — ces réglages sont
         prêts à être branchés dès leur intégration.
       </p>
+
+      <section className="mt-8 max-w-md rounded-xl border border-black/10 bg-white p-5">
+        <h2 className="text-lg font-medium">Synchronisation calendrier</h2>
+        <p className="mt-1 text-sm text-ink/60">
+          Abonnez Google Agenda ou l&apos;app Calendrier de votre téléphone à ce lien
+          (lecture seule) pour voir vos rendez-vous. Une vraie synchro Google Agenda à double
+          sens nécessiterait une connexion Google (à venir).
+        </p>
+        <input
+          readOnly
+          value={`${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/ical/${salon!.calendar_token}`}
+          className="mt-3 w-full rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-xs"
+        />
+        <form action={regenerateCalendarToken} className="mt-3">
+          <input type="hidden" name="salonId" value={salon!.id} />
+          <button className="text-xs text-ink/50 hover:underline">
+            Générer un nouveau lien (invalide l&apos;ancien)
+          </button>
+        </form>
+      </section>
     </div>
   );
 }

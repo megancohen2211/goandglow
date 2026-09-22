@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { randomUUID } from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireSalonAccess } from "@/lib/auth";
 
@@ -23,6 +24,17 @@ export async function updateSalonSettings(formData: FormData) {
       loyalty_points_per_booking: loyaltyPointsPerBooking,
     })
     .eq("id", salonId);
+
+  revalidatePath("/pro/tableau-de-bord/reglages");
+}
+
+/** Invalide l'ancien lien d'abonnement calendrier (.ics) et en génère un nouveau. */
+export async function regenerateCalendarToken(formData: FormData) {
+  const salonId = String(formData.get("salonId") ?? "");
+  await requireSalonAccess(salonId);
+
+  const admin = createAdminClient();
+  await admin.from("salons").update({ calendar_token: randomUUID() }).eq("id", salonId);
 
   revalidatePath("/pro/tableau-de-bord/reglages");
 }
