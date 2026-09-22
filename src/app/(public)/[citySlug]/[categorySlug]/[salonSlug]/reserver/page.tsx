@@ -29,7 +29,7 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
         </p>
       )}
 
-      <form action={createBooking} className="mt-6 space-y-5">
+      <form action={createBooking} encType="multipart/form-data" className="mt-6 space-y-5">
         <input type="hidden" name="citySlug" value={params.citySlug} />
         <input type="hidden" name="categorySlug" value={params.categorySlug} />
         <input type="hidden" name="salonSlug" value={params.salonSlug} />
@@ -130,6 +130,19 @@ export default async function ReserverPage({ params, searchParams }: ReserverPag
             placeholder="ex. A1B2C3D4"
             className="mt-1 w-full rounded-lg border border-line px-3 py-2 uppercase"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Photo d&apos;inspiration (optionnel)</label>
+          <input
+            type="file"
+            name="inspirationPhoto"
+            accept="image/*"
+            className="mt-1 w-full text-sm"
+          />
+          <p className="mt-1 text-xs text-ink/50">
+            Montrez la coupe ou la couleur que vous souhaitez.
+          </p>
         </div>
 
         {salon.loyalty_reward_value > 0 && (

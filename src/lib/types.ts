@@ -103,6 +103,7 @@ export interface Booking {
   source: string;
   note: string | null;
   address: string | null;
+  inspiration_photo: string | null;
   created_at: string;
 }
 

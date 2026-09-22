@@ -57,9 +57,19 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
             </h2>
             <ul className="mt-2 divide-y divide-line rounded-2xl border border-line bg-surface">
               {dayBookings.map((b) => (
-                <li key={b.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                  <span>
+                <li key={b.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
+                  <span className="flex items-center gap-2">
                     {b.booking_time.slice(0, 5)} — {b.client_name}
+                    {b.inspiration_photo && (
+                      <a href={b.inspiration_photo} target="_blank" rel="noreferrer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={b.inspiration_photo}
+                          alt="Photo d'inspiration"
+                          className="h-8 w-8 rounded-lg object-cover"
+                        />
+                      </a>
+                    )}
                   </span>
                   <span className="text-ink/50">{b.duration_min} min · {b.price} €</span>
                 </li>

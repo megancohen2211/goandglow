@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { randomUUID } from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { addMinutes, timeToMinutes, weekdayOf, offpeakDiscountPercent } from "@/lib/time";
 import { awardLoyaltyPoints } from "@/lib/loyalty";
@@ -85,6 +86,20 @@ export async function createBooking(formData: FormData) {
   }
 
   const admin = createAdminClient();
+
+  let inspirationPhotoUrl: string | null = null;
+  const inspirationFile = formData.get("inspirationPhoto");
+  if (inspirationFile instanceof File && inspirationFile.size > 0 && inspirationFile.size <= 5 * 1024 * 1024) {
+    const ext = inspirationFile.name.split(".").pop() ?? "jpg";
+    const path = `${salonId}/${randomUUID()}.${ext}`;
+    const { error: uploadError } = await admin.storage
+      .from("inspiration-photos")
+      .upload(path, inspirationFile, { contentType: inspirationFile.type || "image/jpeg" });
+    if (!uploadError) {
+      const { data } = admin.storage.from("inspiration-photos").getPublicUrl(path);
+      inspirationPhotoUrl = data.publicUrl;
+    }
+  }
 
   const { data: salon, error: salonError } = await admin
     .from("salons")
@@ -189,6 +204,7 @@ export async function createBooking(formData: FormData) {
       price,
       status: "ok" as const,
       source: "goandglow",
+      inspiration_photo: inspirationPhotoUrl,
     };
   });
 

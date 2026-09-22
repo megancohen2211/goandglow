@@ -11,3 +11,10 @@ alter table salons add column if not exists offpeak_end time not null default '1
 -- affichage du solde déjà en place).
 alter table salons add column if not exists loyalty_reward_threshold int not null default 100;
 alter table salons add column if not exists loyalty_reward_value numeric(10,2) not null default 10;
+
+-- Photo d'inspiration jointe à une réservation (coupe/couleur voulue).
+alter table bookings add column if not exists inspiration_photo text;
+
+insert into storage.buckets (id, name, public)
+values ('inspiration-photos', 'inspiration-photos', true)
+on conflict (id) do nothing;
