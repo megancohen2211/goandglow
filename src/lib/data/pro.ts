@@ -3,6 +3,7 @@ import type {
   Booking,
   Chat,
   ChatMessage,
+  ClientNote,
   Giftcard,
   Salon,
   StaffUnavailability,
@@ -79,6 +80,73 @@ export async function getChatMessages(chatId: string) {
 
   if (error) throw error;
   return (data ?? []) as ChatMessage[];
+}
+
+export interface ClientSummary {
+  phone: string;
+  name: string;
+  visits: number;
+  totalSpent: number;
+  lastVisit: string;
+}
+
+/** Fiches clients dérivées des réservations (pas de compte client formel dans ce MVP). */
+export async function getClients(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("client_name, client_phone, booking_date, price, status")
+    .eq("salon_id", salonId)
+    .order("booking_date", { ascending: false });
+
+  if (error) throw error;
+
+  const byPhone = new Map<string, ClientSummary>();
+  for (const b of (data ?? []) as Pick<Booking, "client_name" | "client_phone" | "booking_date" | "price" | "status">[]) {
+    if (!b.client_phone) continue;
+    const existing = byPhone.get(b.client_phone);
+    if (existing) {
+      existing.visits += 1;
+      if (b.status !== "cancelled") existing.totalSpent += Number(b.price);
+      if (b.booking_date > existing.lastVisit) existing.lastVisit = b.booking_date;
+    } else {
+      byPhone.set(b.client_phone, {
+        phone: b.client_phone,
+        name: b.client_name,
+        visits: 1,
+        totalSpent: b.status !== "cancelled" ? Number(b.price) : 0,
+        lastVisit: b.booking_date,
+      });
+    }
+  }
+
+  return Array.from(byPhone.values()).sort((a, b) => (a.lastVisit < b.lastVisit ? 1 : -1));
+}
+
+export async function getClientBookings(salonId: string, clientPhone: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("salon_id", salonId)
+    .eq("client_phone", clientPhone)
+    .order("booking_date", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Booking[];
+}
+
+export async function getClientNotes(salonId: string, clientPhone: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("client_notes")
+    .select("*")
+    .eq("salon_id", salonId)
+    .eq("client_phone", clientPhone)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as ClientNote[];
 }
 
 export async function getUpcomingUnavailability(salonId: string) {
