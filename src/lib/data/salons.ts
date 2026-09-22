@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Review, Salon, Service, Staff } from "@/lib/types";
+import type { Closure, OpeningHours, Review, Salon, Service, Staff } from "@/lib/types";
 
 export interface SalonSearchParams {
   citySlug?: string;
@@ -81,6 +81,30 @@ export async function getSalonStaff(salonId: string) {
 
   if (error) throw error;
   return (data ?? []) as Staff[];
+}
+
+export async function getOpeningHours(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("opening_hours")
+    .select("*")
+    .eq("salon_id", salonId)
+    .order("weekday");
+
+  if (error) throw error;
+  return (data ?? []) as OpeningHours[];
+}
+
+export async function getClosures(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("closures")
+    .select("*")
+    .eq("salon_id", salonId)
+    .order("closed_date");
+
+  if (error) throw error;
+  return (data ?? []) as Closure[];
 }
 
 export async function getSalonReviews(salonId: string) {
