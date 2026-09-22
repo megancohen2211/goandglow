@@ -1,4 +1,4 @@
--- GoAndGlow — schéma de base (à coller dans l'éditeur SQL de Supabase)
+-- Go & Glow — schéma de base (à coller dans l'éditeur SQL de Supabase)
 -- Étape 1 : tables principales. Les règles de sécurité (RLS) détaillées
 -- viendront à l'étape suivante, une fois l'authentification branchée.
 

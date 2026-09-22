@@ -6,7 +6,7 @@ export default function ProLayout({ children }: { children: React.ReactNode }) {
       <header className="border-b border-white/10">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/pro" className="text-lg font-semibold">
-            GoAndGlow <span className="text-white/50">pro</span>
+            Go & Glow <span className="text-white/50">pro</span>
           </Link>
           <Link href="/" className="text-sm text-white/50 hover:text-white">
             Voir le site particuliers

@@ -1,4 +1,4 @@
--- GoAndGlow — données de démonstration (Marseille) pour le développement.
+-- Go & Glow — données de démonstration (Marseille) pour le développement.
 -- Ne PAS exécuter sur un projet Supabase de production.
 
 -- Compte propriétaire de la plateforme (à relier ensuite à un utilisateur

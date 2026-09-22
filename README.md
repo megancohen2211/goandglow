@@ -1,4 +1,4 @@
-# GoAndGlow
+# Go & Glow
 
 Plateforme de réservation en ligne pour les métiers de la beauté (coiffure,
 barbier, ongles, esthétique, massage), sans commission pour la plateforme :

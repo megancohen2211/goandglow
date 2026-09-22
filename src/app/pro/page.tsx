@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ProLandingPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-      <h1 className="text-3xl font-semibold">Développez votre salon avec GoAndGlow</h1>
+      <h1 className="text-3xl font-semibold">Développez votre salon avec Go & Glow</h1>
       <p className="mt-3 text-ink/60">
         Agenda, caisse, clients et statistiques. Sans commission sur vos réservations : un
         abonnement fixe de 29 €/mois, après 1 an offert.

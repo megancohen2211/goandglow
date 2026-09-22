@@ -6,7 +6,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-semibold text-brand-dark">
-            GoAndGlow
+            Go & Glow
           </Link>
           <nav className="flex gap-4 text-sm text-ink/70">
             <Link href="/">Rechercher</Link>
@@ -17,7 +17,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main className="flex-1">{children}</main>
 
       <footer className="border-t border-black/5 py-8 text-center text-xs text-ink/40">
-        <p>© {new Date().getFullYear()} GoAndGlow</p>
+        <p>© {new Date().getFullYear()} Go & Glow</p>
         <p className="mt-1">
           <Link href="/pro" className="hover:underline">
             Espace pro

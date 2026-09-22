@@ -14,7 +14,7 @@ interface SendEmailInput {
  */
 export async function sendEmail({ to, subject, text, html }: SendEmailInput) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "GoAndGlow <bonjour@goandglow.fr>";
+  const from = process.env.EMAIL_FROM ?? "Go & Glow <bonjour@goandglow.fr>";
 
   if (!apiKey) {
     console.log("[email:simulé]", { to, from, subject, text });

@@ -21,9 +21,9 @@ export default async function InvitationPage({ params, searchParams }: Invitatio
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16">
-      <h1 className="text-2xl font-semibold">Bienvenue sur GoAndGlow</h1>
+      <h1 className="text-2xl font-semibold">Bienvenue sur Go & Glow</h1>
       <p className="mt-2 text-ink/70">
-        GoAndGlow vous invite à publier la fiche de <strong>{salon.name}</strong>, sans
+        Go & Glow vous invite à publier la fiche de <strong>{salon.name}</strong>, sans
         commission sur vos réservations. 6 mois offerts, sans carte bancaire.
       </p>
 
@@ -57,7 +57,7 @@ export default async function InvitationPage({ params, searchParams }: Invitatio
                   <a href="/confidentialite" className="underline" target="_blank">
                     politique de confidentialité
                   </a>{" "}
-                  de GoAndGlow.
+                  de Go & Glow.
                 </span>
               </label>
               <button
