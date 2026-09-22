@@ -9,6 +9,7 @@ import {
   averageRating,
 } from "@/lib/data/salons";
 import { submitReview } from "@/lib/actions/reviews";
+import { startOrContinueChat } from "@/lib/actions/chats";
 
 interface SalonPageProps {
   params: { citySlug: string; categorySlug: string; salonSlug: string };
@@ -112,6 +113,61 @@ export default async function SalonPage({ params, searchParams }: SalonPageProps
       >
         Réserver un rendez-vous
       </Link>
+
+      <section id="contact" className="mt-12 scroll-mt-8">
+        <h2 className="text-lg font-medium">Une question ?</h2>
+        <details className="mt-3">
+          <summary className="cursor-pointer text-sm font-medium text-brand-dark">
+            Contacter le salon par message
+          </summary>
+          <form
+            action={startOrContinueChat}
+            className="mt-4 space-y-3 rounded-xl border border-black/10 bg-white p-4"
+          >
+            <input type="hidden" name="citySlug" value={params.citySlug} />
+            <input type="hidden" name="categorySlug" value={params.categorySlug} />
+            <input type="hidden" name="salonSlug" value={params.salonSlug} />
+            <input type="hidden" name="salonId" value={salon.id} />
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium">Nom</label>
+                <input
+                  type="text"
+                  name="clientName"
+                  required
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Téléphone</label>
+                <input
+                  type="tel"
+                  name="clientPhone"
+                  required
+                  className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Message</label>
+              <textarea
+                name="text"
+                required
+                rows={3}
+                className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2"
+              />
+            </div>
+            <p className="text-xs text-ink/50">
+              Vous recevrez un lien pour suivre la conversation ; conservez-le, il n&apos;y a pas
+              de compte client dans cette version.
+            </p>
+            <button className="rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-dark">
+              Envoyer le message
+            </button>
+          </form>
+        </details>
+      </section>
 
       <section id="avis" className="mt-12 scroll-mt-8">
         <h2 className="text-lg font-medium">Avis clients</h2>

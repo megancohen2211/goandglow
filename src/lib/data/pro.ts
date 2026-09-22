@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Booking, Giftcard, Salon, Subscription, Waitlist } from "@/lib/types";
+import type { Booking, Chat, ChatMessage, Giftcard, Salon, Subscription, Waitlist } from "@/lib/types";
 
 /** Fiches possédées par le compte connecté (RLS : owner_account_id = soi-même). */
 export async function getMySalons(accountId: string) {
@@ -46,6 +46,30 @@ export async function getGiftcards(salonId: string) {
 
   if (error) throw error;
   return (data ?? []) as Giftcard[];
+}
+
+export async function getChats(salonId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("chats")
+    .select("*")
+    .eq("salon_id", salonId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Chat[];
+}
+
+export async function getChatMessages(chatId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("chat_messages")
+    .select("*")
+    .eq("chat_id", chatId)
+    .order("created_at");
+
+  if (error) throw error;
+  return (data ?? []) as ChatMessage[];
 }
 
 export async function getUpcomingBookings(salonId: string) {
